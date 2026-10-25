@@ -1,0 +1,124 @@
+Building prerequisites and tiers — local resource analysis, 25 October 2026
+
+Scope
+-----
+The original Infrastructure catalogue is enriched with building-property
+requirements, minimum city gates, and building cost tiers from the installed
+resource packages. These are static definitions, not live-save measurements.
+The graph is a building-dependency reference, not a complete construction
+availability simulator: culture, research, terrain, population, province,
+throne-city, and other conditions can still apply.
+
+Resource fields
+---------------
+TStructureUpgrade serialization was inspected in ResourceED.exe, including
+the serializer at virtual address 0x1410AA180. The relevant serialized fields:
+
+  0x07 — required structure properties
+  0x08 — properties supplied by the structure
+  0x30 — linked property/effect resources, including the building's ID property
+  0x36 — cost definition link
+  0x4D — additional property requirements, including city-level gates
+  0x2D — required colony-domain requisite
+  0x2E — required count of that requisite
+
+Resource links are decoded by their 64-bit resource IDs, including links
+without a text-form [#ID] marker. The root field-offset table contains a
+compact-entry count and a separate wide-entry count; both count toward its
+data boundary. This matters when reading the required-property fields.
+
+Buildings are joined by their exact resource ID through their catalogue
+name/icon/internal definition. Display IDs alone are not unique: some game
+variants share the same display ID, including Town Hall variants.
+
+For each required property, the graph finds building definitions supplying
+that property. Buildings that require the same property themselves are not
+treated as initial providers. Where later upgrades retain earlier properties,
+the lowest known cost-tier providers are retained. Multiple suppliers of one
+property are alternatives; separate property groups are joint requirements.
+Unresolved property conditions remain in the building details.
+
+City gates appear as labels rather than extra arrows to every economic node.
+Town Hall chains can still connect Town Halls within the same culture.
+Visible graph edges are restricted to the current filters. Details retain
+the full mapped alternatives, including buildings hidden by those filters.
+
+Tiers and ordering
+------------------
+Building tier comes from the linked cost resource name: Tier 1–4, Roman
+numerals in town-hall cost names, and Guild Cost (Tier 4 + token).
+It is not used as evidence for a Town Hall requirement.
+
+Minimum city level comes from required City Tier / Town Hall properties.
+Construction requirements inherit the minimum level required by their
+building prerequisites; the minimum over alternatives is used for one
+property group, and the maximum over joint groups is used for the building.
+An ordinary city building without a higher mapped city gate is listed under
+City I. This is an earliest possible city gate, subject to its other unlocks.
+Province improvements have no city-level ranking. Unknown building tiers
+sort after the known tiers rather than being guessed from their price.
+
+Default list ordering is required city level, building tier, then name.
+Building-tier-first, name, and largest-discount sorts are also available.
+
+Cross-check examples
+--------------------
+Workshop: 00000415000001DA
+  Supplies Tier 1 - Structure Production and Tier 1 - Unit Production.
+  Its Industrial and War Infrastructure discounts remain unchanged.
+
+Market:
+  Requires Tier 1 - Gold; supplies Tier 2 - Gold.
+  The ordinary provider is Vendor; Training Hall is an alternative supplier.
+  Cost definition: Costs Tier 2. No higher Town Hall gate is implied by that.
+
+Academy:
+  Requires Tier 2 - Research; ordinary provider Arcane Institute.
+  Cost definition: Costs Tier 3. Required domain requisite: Research Post.
+
+Masonic Hall:
+  Requires the Stonemason ID property (with culture alternatives).
+  Requires two Quarry domain requisites; building cost tier is III.
+
+Forester's Guild:
+  Requires the Woodworker ID property (with culture alternative Wood Conjurer).
+  Requires three Forester domain requisites; building cost tier is III.
+  Its boost condition remains four Foresters, which is a separate condition.
+
+Stone Walls: 0000041500000456
+  Field 0x07 requires Defense - Palisade Walls - ID (000003FE000008D0).
+  Field 0x4D requires Town Hall Tier 3 - Base City Level - ID
+  (0000042A000001BE). Listed under City III, building tier III.
+
+Catapult Towers:
+  Requires Ballista Tower ID and Tier 4 - Town Hall.
+  Listed under City IV, building tier IV.
+
+Wizard Tower: Foundation:
+  Additional requirements include Throne City ID and the Town Hall Tier 2
+  base-city-level ID. Listed under City II, building tier I.
+
+Catalogue presentation
+----------------------
+341 display entries remain after omitting unused/iconless definitions and
+merging variants with identical name, category, origin, Infrastructure tags,
+boost requirement, and required properties. The earlier visual merged some
+variants without checking their different prerequisites. All 36 common
+buildings now share one category. Province improvements are also one category;
+the resource filters can select only improvements with a matching bonus.
+
+Checks
+------
+All non-city prerequisite edges were checked for graph cycles: none found.
+Browser checks cover core prerequisite chains, default city/tier ordering,
+resource filters, view switching, culture selection, original icon loading,
+boost totals, details, and desktop/mobile layouts.
+
+Supporting assets
+------------------
+assets/buildings-data.js contains the generated display data and prerequisite
+property groups, including exact game resource IDs and relative source paths.
+The original source/infrastructure-bonuses.html is retained as an archive of
+the first visual. Current pages use assets/buildings.js and assets/site.css.
+Names/icons/boost labels use the pinned AoW4 Database export documented in
+README.md. No game binaries are distributed in this repository.
