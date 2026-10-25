@@ -107,7 +107,7 @@ window.AOWBuildingTree = {
     }
     function draw(results) {
       for (const canvas of results.querySelectorAll('.tree-canvas')) {
-        const nodes=new Map([...canvas.querySelectorAll('.tree-node')].map(n => [n.dataset.key,n]));
+        const nodes=new Map([...canvas.querySelectorAll('[data-graph-node]')].map(n => [n.dataset.key,n]));
         const edges=JSON.parse(canvas.dataset.edges);
         const svg=canvas.querySelector('svg');
         svg.querySelectorAll(':scope > path').forEach(p => p.remove());
@@ -116,8 +116,10 @@ window.AOWBuildingTree = {
         let rail=4;
         for (const edge of edges) {
           const a=nodes.get(edge.from).getBoundingClientRect(), b=nodes.get(edge.to).getBoundingClientRect();
-          const x1=a.right-origin.left, y1=a.top+a.height/2-origin.top;
-          const x2=b.left-origin.left, y2=b.top+b.height/2-origin.top, mid=(x1+x2)/2;
+          const sourceRail=Number(nodes.get(edge.from).dataset.variants)>1 ? 8 : 0;
+          const targetRail=Number(nodes.get(edge.to).dataset.variants)>1 ? 8 : 0;
+          const x1=a.right-origin.left+sourceRail, y1=a.top+a.height/2-origin.top;
+          const x2=b.left-origin.left-targetRail, y2=b.top+b.height/2-origin.top, mid=(x1+x2)/2;
           const p=document.createElementNS('http://www.w3.org/2000/svg','path');
           // Long dependencies travel above the columns rather than through intervening cards.
           p.setAttribute('d',edge.routeAbove
