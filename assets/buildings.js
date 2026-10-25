@@ -1,4 +1,4 @@
-/* Static, dependency-free catalogue and prerequisite graph. */
+/* Static catalogue with cultural building families and ELK prerequisite layout. */
 (() => {
   'use strict';
   const app = document.querySelector('#building-app');
@@ -10,6 +10,8 @@
   }
   const view = document.body.dataset.view;
   const byKey = new Map(buildings.map(b => [b.key, b]));
+  const families = window.AOWBuildingFamilies.createFamilies(buildings);
+  let displayedFamilies = new Map();
   const iconBase = 'https://cdn.jsdelivr.net/gh/MinionsArt/aow4db@df99314bf82c1bdeef51206a7257d7bb125b35a8/Icons/UpgradeIcons/';
   const skills = [
     {id:'food',label:'Food',affinity:'Nature',color:'food'},
@@ -71,7 +73,7 @@
   const matches = b => (state.category === 'all' || b.group === state.category)
     && (!state.culture || !b.culture || b.culture === state.culture)
     && (!state.skills.size || b.skills.some(s => state.skills.has(s)))
-    && (!state.q || `${b.name} ${b.origin}`.toLocaleLowerCase().includes(state.q.toLocaleLowerCase()));
+    && (!state.q || `${b.name} ${b.origin} ${families.byMember.get(b.key).name}`.toLocaleLowerCase().includes(state.q.toLocaleLowerCase()));
   const image = b => `<img class="building-icon" src="${iconBase+esc(b.icon)}.png" alt="${esc(b.name)} icon" loading="lazy" decoding="async" width="58" height="58">`;
   const badges = b => b.skills.length ? b.skills.map(id => {
     const s = skills.find(s => s.id === id);
@@ -90,84 +92,35 @@
     return `<span class="building-costs" role="table" aria-label="Construction costs using selected bonuses and boost setting" title="Reduced costs use the selected Infrastructure bonuses and building boost setting, before whole-resource rounding."><span class="cost-row cost-heading" role="row"><span role="columnheader">Cost</span><span role="columnheader">Initial</span><span role="columnheader">Reduced</span></span>${Object.entries(b.cost).filter(([resource,value]) => value || ['gold','production'].includes(resource)).map(([resource,value]) => `<span class="cost-row" role="row" data-cost-resource="${esc(resource)}"><span role="rowheader">${esc(costLabels[resource] || resource)}</span><span role="cell" data-initial>${amount(value)}</span><span role="cell" data-reduced>${amount(reducedCost(b,resource))}</span></span>`).join('')}</span>`;
   };
   const card = b => `<article class="building-card" data-building="${esc(b.id)}" data-key="${b.key}" data-city="${b.cityTier ?? 99}" data-tier="${b.tier ?? 99}"><div class="card-top">${image(b)}<div><h3>${esc(b.name)}</h3><div class="meta">${esc([b.origin,b.group].filter(Boolean).join(' · '))}</div></div></div>${tiers(b)}<div class="skill-badges">${badges(b)}</div><div class="discounts"><span class="discount-main">−${pct(b.boostable ? boosted(b) : discount(b))} <small>${b.boostable ? 'if boosted' : 'discount'}</small></span><span class="discount-base">−${pct(discount(b))}<br>unboosted</span></div><p class="boost-requirement">${b.boostable ? 'Boost: '+esc(b.boostRequirement) : 'This building has no building boost.'}</p><button class="inspect" type="button" data-inspect="${b.key}">Requirements & calculation →</button>${buildingCosts(b)}</article>`;
-  const node = (b,visible) => {
+  const node = (b,visible,key=b.key) => {
     const hidden = b.prerequisites.filter(g => !g.cityLevel && !g.options.some(k => visible.has(k))).length;
-    return `<button type="button" class="tree-node" data-key="${b.key}" data-building="${esc(b.id)}" data-inspect="${b.key}" aria-label="Inspect ${esc(b.name)}"><span class="card-top">${image(b)}<strong>${esc(b.name)}</strong></span>${b.origin ? `<span class="meta">${esc(b.origin)}</span>` : ''}${tiers(b)}<span class="skill-badges">${badges(b)}</span><span class="node-discount">−${pct(b.boostable ? boosted(b) : discount(b))} <small>${b.boostable ? 'if boosted' : 'unboosted'}</small></span>${hidden ? `<span class="hidden-parents">${hidden} prerequisite group${hidden === 1 ? '' : 's'} outside this view</span>` : ''}${buildingCosts(b)}</button>`;
+    return `<button type="button" class="tree-node" data-key="${key}" data-building="${esc(b.id)}" data-inspect="${b.key}" aria-label="Inspect ${esc(b.name)}"><span class="card-top">${image(b)}<strong>${esc(b.name)}</strong></span>${b.origin ? `<span class="meta">${esc(b.origin)}</span>` : ''}${tiers(b)}<span class="skill-badges">${badges(b)}</span><span class="node-discount">−${pct(b.boostable ? boosted(b) : discount(b))} <small>${b.boostable ? 'if boosted' : 'unboosted'}</small></span>${hidden ? `<span class="hidden-parents">${hidden} prerequisite group${hidden === 1 ? '' : 's'} outside this view</span>` : ''}${buildingCosts(b)}</button>`;
   };
-  function tree(list) {
-    const visible = new Set(list.map(b => b.key));
-    const parents = new Map(list.map(b => [b.key,[]]));
-    const adjacent = new Map(list.map(b => [b.key,new Set()]));
-    const edges = [];
-    const seen = new Set();
-    for (const b of list) for (const group of b.prerequisites) {
-      if (group.cityLevel && !/^Town Hall /.test(b.name)) continue;
-      for (const key of group.options) {
-        if (!visible.has(key) || key === b.key) continue;
-        if (group.cityLevel && b.culture && byKey.get(key).culture !== b.culture) continue;
-        const edgeKey = key+'>'+b.key;
-        if (seen.has(edgeKey)) continue;
-        seen.add(edgeKey);
-        parents.get(b.key).push(key);
-        adjacent.get(b.key).add(key);
-        adjacent.get(key).add(b.key);
-        edges.push({from:key,to:b.key,alternative:group.options.length > 1});
-      }
-    }
-    const visited = new Set();
-    const components = [];
-    const isolated = [];
-    for (const b of list) {
-      if (visited.has(b.key)) continue;
-      if (!adjacent.get(b.key).size) { isolated.push(b); visited.add(b.key); continue; }
-      const members = [], stack = [b.key];
-      while (stack.length) {
-        const key = stack.pop();
-        if (visited.has(key)) continue;
-        visited.add(key); members.push(key); stack.push(...adjacent.get(key));
-      }
-      components.push(members);
-    }
-    const rankCache = new Map();
-    function rank(key,active = new Set()) {
-      if (rankCache.has(key)) return rankCache.get(key);
-      if (active.has(key)) return 0;
-      const next = new Set(active); next.add(key);
-      const r = Math.max(0,...parents.get(key).map(p => rank(p,next)+1));
-      rankCache.set(key,r); return r;
-    }
-    return '<div class="tree-key"><span><i></i>Prerequisite → unlock</span><span><i class="dashed"></i>Alternative route</span></div>'+components.map((keys,index) => {
-      const cols = new Map();
-      for (const k of keys) { const r=rank(k); if (!cols.has(r)) cols.set(r,[]); cols.get(r).push(byKey.get(k)); }
-      const roots = keys.filter(k => !parents.get(k).length).map(k => byKey.get(k)).sort(compare);
-      const title = (roots.length ? roots : [byKey.get(keys[0])]).map(b => b.name).join(' / ');
-      const componentEdges = edges.filter(e => keys.includes(e.to));
-      return `<section class="tree-component" aria-label="${esc(title)} building chain"><h2 class="component-title">${esc(title)}</h2><div class="tree-scroll" tabindex="0" aria-label="Scroll building chain horizontally"><div class="tree-canvas" data-edges="${esc(JSON.stringify(componentEdges))}"><svg class="tree-lines" aria-hidden="true"><defs><marker id="arrow-${index}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z"></path></marker></defs></svg>${[...cols].sort((a,b) => a[0]-b[0]).map(([r,bs]) => `<div class="tree-column" data-rank="${r}">${bs.sort(compare).map(b => node(b,visible)).join('')}</div>`).join('')}</div></div></section>`;
-    }).join('')+(isolated.length ? `<section class="tree-component"><h2 class="component-title">${components.length ? 'Other buildings' : 'Buildings'} · no building connection within these filters</h2><div class="standalone-nodes">${isolated.map(b => node(b,visible)).join('')}</div></section>` : '');
+  const familyRange = g => {
+    const values=g.members.map(b => b.boostable ? boosted(b) : discount(b));
+    const min=Math.min(...values), max=Math.max(...values);
+    return min === max ? '−'+pct(min) : `−${Number(min.toFixed(1))}–${pct(max)}`;
+  };
+  const variantLinks = members => members.map(b => `<button type="button" class="variant-link" data-inspect="${b.key}"><span>${esc(b.name)}</span><small>${esc(b.culture || 'Shared')}</small></button>`).join('');
+  const costRange = values => {
+    const min=Math.min(...values), max=Math.max(...values);
+    return min === max ? amount(min) : `${amount(min)}–${amount(max)}`;
+  };
+  const familyCosts = g => {
+    if (g.members.some(b => !b.cost)) return '<span class="building-costs">Choose a variant for construction costs</span>';
+    const resources=[...new Set(g.members.flatMap(b => Object.keys(b.cost)))];
+    return `<span class="building-costs" role="table" aria-label="Construction cost ranges across matching variants"><span class="cost-row cost-heading" role="row"><span role="columnheader">Cost range</span><span role="columnheader">Initial</span><span role="columnheader">Reduced</span></span>${resources.map(resource => `<span class="cost-row" role="row"><span role="rowheader">${esc(costLabels[resource] || resource)}</span><span role="cell">${costRange(g.members.map(b => b.cost[resource] || 0))}</span><span role="cell" data-reduced>${costRange(g.members.map(b => reducedCost(b,resource)))}</span></span>`).join('')}</span>`;
+  };
+  function familyNode(g,visible,asCard=false) {
+    if (g.members.length === 1) return asCard ? card(g.members[0]) : node(g.members[0],visible,g.key);
+    const representative=g.members.find(b => !b.culture) || g.members[0];
+    const hidden=new Set(g.members.flatMap(b => b.prerequisites.filter(p => !p.cityLevel && !p.options.some(k => visible.has(k))).map(p => p.property))).size;
+    const summary=`<span class="card-top">${image(representative)}<strong>${esc(g.name)}</strong></span><span class="family-count">${g.members.length} cultural variants</span>${tiers(representative)}<span class="meta family-hint">Bonuses and boosts vary by variant</span><span class="node-discount">${familyRange(g)} <small>with available boosts</small></span>${hidden ? `<span class="hidden-parents">${hidden} prerequisite group${hidden === 1 ? '' : 's'} outside this view</span>` : ''}${familyCosts(g)}`;
+    if (asCard) return `<article class="building-card family-card" data-key="${g.key}">${summary}<details class="variant-list"><summary>Choose a variant</summary>${variantLinks(g.members)}</details><button type="button" class="inspect" data-inspect="${g.key}">Compare variants →</button></article>`;
+    return `<button type="button" class="tree-node family-node" data-key="${g.key}" data-inspect="${g.key}" aria-label="Compare ${esc(g.name)}: ${g.members.length} cultural variants">${summary}<span class="family-action">Compare variants →</span></button>`;
   }
-  function drawConnections() {
-    for (const canvas of results.querySelectorAll('.tree-canvas')) {
-      const svg = canvas.querySelector('svg');
-      svg.querySelectorAll(':scope > path').forEach(p => p.remove());
-      const origin = canvas.getBoundingClientRect();
-      const nodes = new Map([...canvas.querySelectorAll('.tree-node')].map(n => [n.dataset.key,n]));
-      const marker = svg.querySelector('marker').id;
-      for (const edge of JSON.parse(canvas.dataset.edges)) {
-        const a = nodes.get(edge.from)?.getBoundingClientRect();
-        const b = nodes.get(edge.to)?.getBoundingClientRect();
-        if (!a || !b) continue;
-        const x1 = a.right-origin.left, y1 = a.top+a.height/2-origin.top;
-        const x2 = b.left-origin.left-3, y2 = b.top+b.height/2-origin.top;
-        const mid = (x1+x2)/2;
-        const p = document.createElementNS('http://www.w3.org/2000/svg','path');
-        p.setAttribute('d',`M${x1},${y1} C${mid},${y1} ${mid},${y2} ${x2},${y2}`);
-        p.setAttribute('marker-end',`url(#${marker})`);
-        if (edge.alternative) p.classList.add('alternative');
-        svg.appendChild(p);
-      }
-    }
-  }
-  function scheduleDraw() { cancelAnimationFrame(drawFrame); drawFrame=requestAnimationFrame(drawConnections); }
+  const treeRenderer=view === 'tree' ? window.AOWBuildingTree.create({families,node:familyNode,esc}) : null;
+  function scheduleDraw() { cancelAnimationFrame(drawFrame); drawFrame=requestAnimationFrame(() => treeRenderer?.draw(results)); }
   function renderSavings(list) {
     const totals = skills.map(s => {
       const matching = list.filter(b => b.skills.includes(s.id));
@@ -190,43 +143,63 @@
     fill(savings.querySelector('#savings-total'),affected.length,selected.reduce((n,s) => n+s.gold,0),selected.reduce((n,s) => n+s.production,0),selected.some(s => s.missing));
     const cost = resource => list.filter(b => b.cost).reduce((sum,b) => sum+reducedCost(b,resource),0);
     const missing = list.some(b => !b.cost);
-    savings.querySelector('#savings-cost').textContent = `Cost to build ${list.length} displayed ${list.length === 1 ? 'entry' : 'entries'}: ${amount(cost('gold'))} gold · ${amount(cost('production'))} production${missing ? '*' : ''}`;
+    savings.querySelector('#savings-cost').textContent = `Cost to build ${list.length} matching catalogue ${list.length === 1 ? 'entry' : 'entries'}: ${amount(cost('gold'))} gold · ${amount(cost('production'))} production${missing ? '*' : ''}`;
     savings.querySelector('#savings-note').textContent = (state.savingsBoosted
       ? 'Boost requirements assumed met: savings × 0.70 for boostable buildings; others keep their unboosted savings. '
       : 'Unboosted savings. ')
-      + 'Rows show each bonus’s individual savings; checked rows add to the total, counting overlapping buildings once per bonus. Building boosts also apply to the cost to build. Other construction resources are unaffected. Nominal values before whole-resource rounding. Counts each displayed entry once, including alternative buildings.'
+      + 'Rows show each bonus’s individual savings; checked rows add to the total, counting overlapping buildings once per bonus. Building boosts also apply to the cost to build. Other construction resources are unaffected. Nominal values before whole-resource rounding. Counts every matching variant once, including alternatives inside groups; this catalogue total is not a single city’s construction plan.'
       + (missing ? ' * Totals exclude buildings whose costs are unavailable.' : '');
   }
   function render() {
     resizeObserver?.disconnect();
     const list = buildings.filter(matches).sort(compare);
+    const grouped=families.group(list).sort((a,b) => compare(
+      {...a.members[0],name:a.members.length > 1 ? a.name : a.members[0].name},
+      {...b.members[0],name:b.members.length > 1 ? b.name : b.members[0].name}
+    ));
+    displayedFamilies=new Map(grouped.map(g => [g.key,g]));
     renderSavings(list);
-    app.querySelector('#result-count').textContent = `${list.length} building${list.length === 1 ? '' : 's'}`;
+    app.querySelector('#result-count').textContent = grouped.length === list.length ? `${list.length} building${list.length === 1 ? '' : 's'}` : `${grouped.length} building group${grouped.length === 1 ? '' : 's'} · ${list.length} variants`;
     app.querySelector('#view-explanation').textContent = view === 'tree'
-      ? 'Chains run from left to right. City gates are shown on nodes. Filters hide nonmatching nodes and arrows; details retain every mapped prerequisite. Scroll wider chains sideways.'
-      : state.sort === 'city' ? 'Sorted by minimum required city level, then building tier. All matching Infrastructure skills are assumed unlocked.' : 'All matching Infrastructure skills are assumed unlocked. Filters select buildings, not unlocked skills.';
-    results.innerHTML = !list.length ? '<div class="empty"><h2>No matching buildings</h2><p>Try another category or clear a filter.</p></div>' : view === 'tree' ? tree(list) : `<div class="building-grid">${list.map(card).join('')}</div>`;
+      ? 'Chains run left to right. Cultural replacements share one node; select a group to compare variants. City gates appear on nodes. Filters hide nonmatching variants and arrows; details retain all prerequisites. Scroll wider chains sideways.'
+      : (state.sort === 'city' ? 'Sorted by minimum required city level, then building tier. ' : '')+'Cultural replacements are grouped; choose a variant for exact bonuses and requirements. All matching Infrastructure skills are assumed unlocked.';
+    const visible=new Set(list.map(b => b.key));
+    results.innerHTML = !list.length ? '<div class="empty"><h2>No matching buildings</h2><p>Try another category or clear a filter.</p></div>' : view === 'tree' ? treeRenderer.html(grouped.flatMap(g => g.members)) : `<div class="building-grid">${grouped.map(g => familyNode(g,visible,true)).join('')}</div>`;
     const suffix=query();
     history.replaceState(null,'',location.pathname+suffix+location.hash);
     app.querySelector('#list-link').href='buildings.html'+suffix;
     app.querySelector('#tree-link').href='building-tree.html'+suffix;
     if (view === 'tree') {
       resizeObserver = new ResizeObserver(scheduleDraw);
-      results.querySelectorAll('.tree-canvas').forEach(c => resizeObserver.observe(c));
+      results.querySelectorAll('.tree-node').forEach(c => resizeObserver.observe(c));
       scheduleDraw();
     }
   }
   function inspect(key) {
+    if (key.startsWith('family-')) {
+      const g=displayedFamilies.get(key) || [...new Set(families.byMember.values())].find(g => g.key === key);
+      if (!g) return;
+      app.querySelector('#dialog-content').innerHTML=`<div class="eyebrow">Cultural building variants</div><h2 id="dialog-title">${esc(g.name)}</h2><p class="filter-help">These buildings fill the same prerequisite role. Choose a variant to inspect its exact requirements. Culture and unlocks still apply.</p><div class="variant-comparison">${g.members.map(b => `<section class="variant-option"><div class="card-top">${image(b)}<div><h3><button class="parent-link" type="button" data-inspect="${b.key}">${esc(b.name)}</button></h3><span class="meta">${esc(b.culture || 'Shared')}</span></div></div><div class="skill-badges">${badges(b)}</div><span class="node-discount">−${pct(discount(b))} unboosted${b.boostable ? ` · −${pct(boosted(b))} if boosted` : ''}</span><p class="filter-help">${b.boostable ? 'Boost: '+esc(b.boostRequirement) : 'No building boost'}</p>${buildingCosts(b)}</section>`).join('')}</div>`;
+      if (!dialog.open) dialog.showModal();
+      dialog.scrollTop=0;
+      app.querySelector('#dialog-title').setAttribute('tabindex','-1');
+      app.querySelector('#dialog-title').focus({preventScroll:true});
+      return;
+    }
     const b = byKey.get(key);
     if (!b) return;
     const groups = b.prerequisites.filter(g => !g.cityLevel);
-    const parents = groups.map(g => `<li>${g.options.map(k => {
-      const p=byKey.get(k);
-      return `<button type="button" class="parent-link" data-inspect="${k}">${esc(p.name)}${p.origin ? ' ('+esc(p.origin)+')' : ''}</button>`;
-    }).join(' <em>or</em> ')}<br><small>Supplies: ${esc(g.property)}</small></li>`).join('');
+    const parents = groups.map(g => `<li>${families.group(g.options.map(k => byKey.get(k)).filter(Boolean)).map(f => f.members.length > 1
+      ? `<details class="prerequisite-family"><summary>${esc(f.name)} <small>· ${f.members.length} cultural alternatives</small></summary>${variantLinks(f.members)}</details>`
+      : `<button type="button" class="parent-link" data-inspect="${f.members[0].key}">${esc(f.members[0].name)}${f.members[0].origin ? ' ('+esc(f.members[0].origin)+')' : ''}</button>`
+    ).join(' <em>or</em> ')}<small class="property-label">Supplies: ${esc(g.property)}</small></li>`).join('');
     app.querySelector('#dialog-content').innerHTML = `<div class="eyebrow">Building details</div><div class="card-top">${image(b)}<div><h2 id="dialog-title">${esc(b.name)}</h2><span class="meta">${esc([b.origin,b.group].filter(Boolean).join(' · '))}</span></div></div>${tiers(b)}<div class="skill-badges">${badges(b)}</div><h3>Gold & production discount</h3><div class="formula">${b.skills.length} matching skill${b.skills.length === 1 ? '' : 's'} × 25% = −${pct(discount(b))} unboosted${b.boostable ? `<br>Remaining cost × 0.70 = −${pct(boosted(b))} if boosted` : '<br>No building boost is available.'}</div>${b.boostable ? `<p class="filter-help">Boost condition: ${esc(b.boostRequirement)}</p>` : ''}<p class="filter-help">Assumes every matching skill is unlocked. Percentages apply before whole-resource rounding.</p><h3>Building prerequisites</h3>${parents ? `<p class="filter-help">Meet each group below. Within a group, one alternative is enough, subject to your culture and unlocks.</p><ul>${parents}</ul>` : '<p>No building-property chain was mapped for this entry. Check the additional gates below.</p>'}<h3>Additional gates</h3><ul>${b.cityTier ? `<li>Minimum city level: Town Hall ${roman(b.cityTier)} (including prerequisite buildings).</li>` : '<li>Province improvement; city-level sorting does not apply.</li>'}${b.domainRequirements.map(r => `<li>${b.domainCount ? b.domainCount+' × ' : ''}${esc(r.replace(' - Requisite',''))}.</li>`).join('')}${b.requirementDescription ? `<li>${esc(b.requirementDescription.replace(/\s+/g,' '))}</li>` : ''}${b.origin ? `<li>Origin / unlock context: ${esc(b.origin)}.</li>` : ''}${[...new Set(b.otherRequirements)].filter(r => !/City Tier |Town Hall Tier |Tier [1-4] - Town Hall/.test(r)).map(r => `<li>${esc(r)} <small>(unmapped property condition)</small></li>`).join('')}</ul><p class="filter-help">Building links come from required property IDs. Province, culture, tome, throne-city, and other conditions may also gate construction.</p><h3>Local definition</h3><p class="filter-help">${esc(b.internal)}<br>Resource ${b.key}<br>${esc(b.file)}</p>`;
+    const family=families.byMember.get(b.key);
+    if (family.members.length > 1) app.querySelector('#dialog-content').insertAdjacentHTML('afterbegin',`<button class="parent-link family-back" type="button" data-inspect="${family.key}">← ${esc(family.name)} variants</button>`);
     if (!dialog.open) dialog.showModal();
     dialog.scrollTop=0;
+    app.querySelector('#dialog-title').setAttribute('tabindex','-1');
+    app.querySelector('#dialog-title').focus({preventScroll:true});
   }
   app.querySelector('#search').addEventListener('input',e => { state.q=e.target.value; render(); });
   for (const name of ['category','culture','sort']) app.querySelector('#'+name).addEventListener('change',e => { state[name]=e.target.value; render(); });
