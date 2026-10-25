@@ -31,7 +31,7 @@
   const boosted = b => 100 - (100 - discount(b)) * .7;
   const params = new URLSearchParams(location.search);
   const state = {
-    category: params.get('category') === 'all' ? 'all' : categories.includes(params.get('category')) ? params.get('category') : 'Common buildings',
+    category: categories.includes(params.get('category')) ? params.get('category') : 'all',
     culture: cultures.includes(params.get('culture')) ? params.get('culture') : '',
     skills: new Set((params.get('skills') || '').split(',').filter(s => skills.some(x => x.id === s))),
     q: params.get('q') || '',
@@ -52,7 +52,7 @@
   let drawFrame;
   const query = () => {
     const p = new URLSearchParams();
-    if (state.category !== 'Common buildings') p.set('category',state.category);
+    if (state.category !== 'all') p.set('category',state.category);
     if (state.culture) p.set('culture',state.culture);
     if (state.skills.size) p.set('skills',skills.filter(s => state.skills.has(s.id)).map(s => s.id).join(','));
     if (state.q) p.set('q',state.q);
@@ -208,7 +208,7 @@
     render();
   }));
   app.querySelector('.reset').addEventListener('click',() => {
-    Object.assign(state,{category:'Common buildings',culture:'',skills:new Set(),q:'',sort:'city'});
+    Object.assign(state,{category:'all',culture:'',skills:new Set(),q:'',sort:'city'});
     app.querySelector('#search').value='';
     for (const name of ['category','culture','sort']) app.querySelector('#'+name).value=state[name];
     app.querySelectorAll('.skill-toggle input').forEach(i => { i.checked=false; });
