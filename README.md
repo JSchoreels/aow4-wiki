@@ -14,6 +14,8 @@ The reference assumes all six Infrastructure skills are unlocked. Boosted totals
 
 Both building views include a savings calculator for the entries matching the active filters. Independently select which Infrastructure bonuses to include and whether to assume building boosts are met. Each bonus row shows its individual gold and production savings; checked rows add to the combined total. The cost to build uses only selected bonuses and applies the 30% building boost where available. Filter changes, including search and culture, recalculate the summary. Calculator choices are preserved in the shared URL and when switching between list and tree.
 
+The bottom of each building card and tree node shows initial and reduced construction costs using the calculator's selected bonuses and boost setting. Additional resources, such as mana, appear with unchanged costs. These reduced costs use the same calculation as the filtered total.
+
 Construction costs come from the same pinned AoW4 Database export, joined by exact game resource ID for all 341 displayed entries. Savings apply only to gold and production; other construction resources remain unaffected and are excluded from the cost line. Values are nominal before whole-resource rounding. Each displayed entry is counted once, so a view containing alternative buildings or several cultures is a catalogue total rather than a single city's construction plan. The per-building discount badges continue to assume every matching Infrastructure skill is unlocked.
 
 ## Sources and verification

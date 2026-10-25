@@ -24,6 +24,7 @@
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const roman = n => ['—','I','II','III','IV'][n] || '—';
   const pct = n => `${Number(n.toFixed(1))}%`;
+  const amount = n => n.toLocaleString('en-US',{maximumFractionDigits:3});
   const discount = b => b.skills.length * 25;
   const boosted = b => 100 - (100 - discount(b)) * .7;
   const params = new URLSearchParams(location.search);
@@ -77,10 +78,21 @@
     return `<span class="skill-badge" style="--tone:var(--${s.color})" title="${s.label} Infrastructure · ${s.affinity}: −25% gold and production">${s.label} −25%</span>`;
   }).join('') : '<span class="no-skills">No Infrastructure bonus</span>';
   const tiers = b => `<div class="tiers">${b.cityTier ? `<span class="tier" title="Minimum required Town Hall level, including building prerequisites">City ${roman(b.cityTier)}</span>` : '<span class="tier">Province improvement</span>'}${b.tier ? `<span class="tier" title="Building tier from its cost definition">Building tier ${roman(b.tier)}</span>` : ''}</div>`;
-  const card = b => `<article class="building-card" data-building="${esc(b.id)}" data-key="${b.key}" data-city="${b.cityTier ?? 99}" data-tier="${b.tier ?? 99}"><div class="card-top">${image(b)}<div><h3>${esc(b.name)}</h3><div class="meta">${esc([b.origin,b.group].filter(Boolean).join(' · '))}</div></div></div>${tiers(b)}<div class="skill-badges">${badges(b)}</div><div class="discounts"><span class="discount-main">−${pct(b.boostable ? boosted(b) : discount(b))} <small>${b.boostable ? 'if boosted' : 'discount'}</small></span><span class="discount-base">−${pct(discount(b))}<br>unboosted</span></div><p class="boost-requirement">${b.boostable ? 'Boost: '+esc(b.boostRequirement) : 'This building has no building boost.'}</p><button class="inspect" type="button" data-inspect="${b.key}">Requirements & calculation →</button></article>`;
+  const reducedCost = (b,resource) => {
+    const initial = b.cost[resource] || 0;
+    if (!['gold','production'].includes(resource)) return initial;
+    const matches = b.skills.filter(id => state.savingsSkills.has(id)).length;
+    return initial * (1-matches*.25) * (state.savingsBoosted && b.boostable ? .7 : 1);
+  };
+  const costLabels = {gold:'Gold',production:'Production',mana:'Mana',warspoils:'War Spoils',embalmedsacrifice:'Embalmed Sacrifices',wonderstone:'Wonderstone'};
+  const buildingCosts = b => {
+    if (!b.cost) return '<span class="building-costs">Construction costs unavailable</span>';
+    return `<span class="building-costs" role="table" aria-label="Construction costs using selected bonuses and boost setting" title="Reduced costs use the selected Infrastructure bonuses and building boost setting, before whole-resource rounding."><span class="cost-row cost-heading" role="row"><span role="columnheader">Cost</span><span role="columnheader">Initial</span><span role="columnheader">Reduced</span></span>${Object.entries(b.cost).filter(([resource,value]) => value || ['gold','production'].includes(resource)).map(([resource,value]) => `<span class="cost-row" role="row" data-cost-resource="${esc(resource)}"><span role="rowheader">${esc(costLabels[resource] || resource)}</span><span role="cell" data-initial>${amount(value)}</span><span role="cell" data-reduced>${amount(reducedCost(b,resource))}</span></span>`).join('')}</span>`;
+  };
+  const card = b => `<article class="building-card" data-building="${esc(b.id)}" data-key="${b.key}" data-city="${b.cityTier ?? 99}" data-tier="${b.tier ?? 99}"><div class="card-top">${image(b)}<div><h3>${esc(b.name)}</h3><div class="meta">${esc([b.origin,b.group].filter(Boolean).join(' · '))}</div></div></div>${tiers(b)}<div class="skill-badges">${badges(b)}</div><div class="discounts"><span class="discount-main">−${pct(b.boostable ? boosted(b) : discount(b))} <small>${b.boostable ? 'if boosted' : 'discount'}</small></span><span class="discount-base">−${pct(discount(b))}<br>unboosted</span></div><p class="boost-requirement">${b.boostable ? 'Boost: '+esc(b.boostRequirement) : 'This building has no building boost.'}</p><button class="inspect" type="button" data-inspect="${b.key}">Requirements & calculation →</button>${buildingCosts(b)}</article>`;
   const node = (b,visible) => {
     const hidden = b.prerequisites.filter(g => !g.cityLevel && !g.options.some(k => visible.has(k))).length;
-    return `<button type="button" class="tree-node" data-key="${b.key}" data-building="${esc(b.id)}" data-inspect="${b.key}" aria-label="Inspect ${esc(b.name)}"><span class="card-top">${image(b)}<strong>${esc(b.name)}</strong></span>${b.origin ? `<span class="meta">${esc(b.origin)}</span>` : ''}${tiers(b)}<span class="skill-badges">${badges(b)}</span><span class="node-discount">−${pct(b.boostable ? boosted(b) : discount(b))} <small>${b.boostable ? 'if boosted' : 'unboosted'}</small></span>${hidden ? `<span class="hidden-parents">${hidden} prerequisite group${hidden === 1 ? '' : 's'} outside this view</span>` : ''}</button>`;
+    return `<button type="button" class="tree-node" data-key="${b.key}" data-building="${esc(b.id)}" data-inspect="${b.key}" aria-label="Inspect ${esc(b.name)}"><span class="card-top">${image(b)}<strong>${esc(b.name)}</strong></span>${b.origin ? `<span class="meta">${esc(b.origin)}</span>` : ''}${tiers(b)}<span class="skill-badges">${badges(b)}</span><span class="node-discount">−${pct(b.boostable ? boosted(b) : discount(b))} <small>${b.boostable ? 'if boosted' : 'unboosted'}</small></span>${hidden ? `<span class="hidden-parents">${hidden} prerequisite group${hidden === 1 ? '' : 's'} outside this view</span>` : ''}${buildingCosts(b)}</button>`;
   };
   function tree(list) {
     const visible = new Set(list.map(b => b.key));
@@ -156,7 +168,6 @@
     }
   }
   function scheduleDraw() { cancelAnimationFrame(drawFrame); drawFrame=requestAnimationFrame(drawConnections); }
-  const amount = n => n.toLocaleString('en-US',{maximumFractionDigits:3});
   function renderSavings(list) {
     const totals = skills.map(s => {
       const matching = list.filter(b => b.skills.includes(s.id));
@@ -177,10 +188,7 @@
     const selected = totals.filter(s => state.savingsSkills.has(s.id));
     const affected = list.filter(b => b.skills.some(id => state.savingsSkills.has(id)));
     fill(savings.querySelector('#savings-total'),affected.length,selected.reduce((n,s) => n+s.gold,0),selected.reduce((n,s) => n+s.production,0),selected.some(s => s.missing));
-    const cost = resource => list.filter(b => b.cost).reduce((sum,b) => {
-      const matches=b.skills.filter(id => state.savingsSkills.has(id)).length;
-      return sum+(b.cost[resource] || 0)*(1-matches*.25)*(state.savingsBoosted && b.boostable ? .7 : 1);
-    },0);
+    const cost = resource => list.filter(b => b.cost).reduce((sum,b) => sum+reducedCost(b,resource),0);
     const missing = list.some(b => !b.cost);
     savings.querySelector('#savings-cost').textContent = `Cost to build ${list.length} displayed ${list.length === 1 ? 'entry' : 'entries'}: ${amount(cost('gold'))} gold · ${amount(cost('production'))} production${missing ? '*' : ''}`;
     savings.querySelector('#savings-note').textContent = (state.savingsBoosted
