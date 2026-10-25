@@ -32,11 +32,18 @@
     culture: cultures.includes(params.get('culture')) ? params.get('culture') : '',
     skills: new Set((params.get('skills') || '').split(',').filter(s => skills.some(x => x.id === s))),
     q: params.get('q') || '',
-    sort: ['city','tier','name','discount'].includes(params.get('sort')) ? params.get('sort') : 'city'
+    sort: ['city','tier','name','discount'].includes(params.get('sort')) ? params.get('sort') : 'city',
+    savingsBoosted: params.get('savingsBoosted') === '1',
+    savingsSkills: new Set(params.has('savingsSkills') ? params.get('savingsSkills').split(',').filter(id => skills.some(s => s.id === id)) : skills.map(s => s.id))
   };
   const option = (value,label,current) => `<option value="${esc(value)}"${value === current ? ' selected' : ''}>${esc(label)}</option>`;
   app.innerHTML = `<div class="workspace"><aside class="filters" aria-label="Building filters"><h2>Find a building</h2><label class="field"><span>Search by name</span><input id="search" type="search" placeholder="e.g. Workshop" value="${esc(state.q)}"></label><fieldset><legend>Infrastructure bonus</legend><div class="skill-options">${skills.map(s => `<label class="skill-toggle" style="--tone:var(--${s.color})" title="${s.label} Infrastructure · ${s.affinity}"><input type="checkbox" value="${s.id}"${state.skills.has(s.id) ? ' checked' : ''}><span>${s.label}</span><i class="dot" aria-hidden="true"></i></label>`).join('')}</div><p class="filter-help">Select a bonus to see matching buildings. Several selected = matches any. None selected = all bonuses.</p></fieldset><div class="filter-selects"><label class="field"><span>Building category</span><select id="category">${option('all','All buildings',state.category)}${categories.map(c => option(c,c,state.category)).join('')}</select></label><label class="field"><span>Culture</span><select id="culture">${option('','All cultures',state.culture)}${cultures.map(c => option(c,'Shared + '+c,state.culture)).join('')}</select></label></div><label class="field"><span>Sort buildings</span><select id="sort">${option('city','City level → building tier',state.sort)}${option('tier','Building tier → city level',state.sort)}${option('name','Name: A–Z',state.sort)}${option('discount','Largest discount first',state.sort)}</select></label><button class="reset" type="button">Reset filters</button></aside><section class="results" aria-label="Building results"><div class="toolbar"><span id="result-count" class="result-count" role="status" aria-live="polite"></span><div class="view-switch" aria-label="Display view"><a id="list-link" href="buildings.html"${view === 'list' ? ' aria-current="page"' : ''}>List</a><a id="tree-link" href="building-tree.html"${view === 'tree' ? ' aria-current="page"' : ''}>Tree</a></div></div><p class="explain" id="view-explanation"></p><div id="results"></div></section></div><dialog id="building-dialog" aria-labelledby="dialog-title"><button type="button" class="dialog-close" aria-label="Close building details">Close ×</button><div id="dialog-content"></div></dialog>`;
   const results = app.querySelector('#results');
+  const savings = document.createElement('section');
+  savings.className = 'savings';
+  savings.setAttribute('aria-labelledby','savings-title');
+  savings.innerHTML = `<div class="savings-heading"><h2 id="savings-title">Infrastructure savings in this view</h2><label class="savings-boost"><input type="checkbox" id="savings-boosted"${state.savingsBoosted ? ' checked' : ''}> With building boosts</label></div><p class="filter-help">Choose the bonuses to include in the calculation. Each saves 25% on its matching buildings. These choices leave the building filters unchanged.</p><div class="savings-table-wrap"><table><caption class="sr-only">Construction resources saved by each Infrastructure bonus for the current filters</caption><thead><tr><th scope="col">Include bonus</th><th scope="col">Buildings</th><th scope="col">Gold saved</th><th scope="col">Production saved</th></tr></thead><tbody>${skills.map(s => `<tr data-savings="${s.id}"><th scope="row" style="--tone:var(--${s.color})"><label><input type="checkbox" value="${s.id}"${state.savingsSkills.has(s.id) ? ' checked' : ''}> ${s.label} <small>−25%</small></label></th><td data-count></td><td data-gold></td><td data-production></td></tr>`).join('')}</tbody><tfoot><tr id="savings-total"><th scope="row">Selected bonuses</th><td data-count></td><td data-gold></td><td data-production></td></tr></tfoot></table></div><p class="savings-cost" id="savings-cost"></p><p class="filter-help" id="savings-note"></p>`;
+  results.before(savings);
   const dialog = app.querySelector('dialog');
   let resizeObserver;
   let drawFrame;
@@ -47,6 +54,8 @@
     if (state.skills.size) p.set('skills',skills.filter(s => state.skills.has(s.id)).map(s => s.id).join(','));
     if (state.q) p.set('q',state.q);
     if (state.sort !== 'city') p.set('sort',state.sort);
+    if (state.savingsBoosted) p.set('savingsBoosted','1');
+    if (state.savingsSkills.size !== skills.length) p.set('savingsSkills',skills.filter(s => state.savingsSkills.has(s.id)).map(s => s.id).join(','));
     return p.size ? '?'+p.toString() : '';
   };
   const compare = (a,b) => {
@@ -147,9 +156,43 @@
     }
   }
   function scheduleDraw() { cancelAnimationFrame(drawFrame); drawFrame=requestAnimationFrame(drawConnections); }
+  const amount = n => n.toLocaleString('en-US',{maximumFractionDigits:3});
+  function renderSavings(list) {
+    const totals = skills.map(s => {
+      const matching = list.filter(b => b.skills.includes(s.id));
+      const known = matching.filter(b => b.cost);
+      const saved = resource => known.reduce((sum,b) => sum + (b.cost[resource] || 0) * .25 * (state.savingsBoosted && b.boostable ? .7 : 1),0);
+      return {...s,count:matching.length,missing:matching.length-known.length,gold:saved('gold'),production:saved('production')};
+    });
+    const fill = (row,count,gold,production,missing) => {
+      row.querySelector('[data-count]').textContent = count;
+      row.querySelector('[data-gold]').textContent = amount(gold)+(missing ? '*' : '');
+      row.querySelector('[data-production]').textContent = amount(production)+(missing ? '*' : '');
+    };
+    for (const s of totals) {
+      const row=savings.querySelector(`[data-savings="${s.id}"]`);
+      row.classList.toggle('excluded',!state.savingsSkills.has(s.id));
+      fill(row,s.count,s.gold,s.production,s.missing);
+    }
+    const selected = totals.filter(s => state.savingsSkills.has(s.id));
+    const affected = list.filter(b => b.skills.some(id => state.savingsSkills.has(id)));
+    fill(savings.querySelector('#savings-total'),affected.length,selected.reduce((n,s) => n+s.gold,0),selected.reduce((n,s) => n+s.production,0),selected.some(s => s.missing));
+    const cost = resource => list.filter(b => b.cost).reduce((sum,b) => {
+      const matches=b.skills.filter(id => state.savingsSkills.has(id)).length;
+      return sum+(b.cost[resource] || 0)*(1-matches*.25)*(state.savingsBoosted && b.boostable ? .7 : 1);
+    },0);
+    const missing = list.some(b => !b.cost);
+    savings.querySelector('#savings-cost').textContent = `Cost to build ${list.length} displayed ${list.length === 1 ? 'entry' : 'entries'}: ${amount(cost('gold'))} gold · ${amount(cost('production'))} production${missing ? '*' : ''}`;
+    savings.querySelector('#savings-note').textContent = (state.savingsBoosted
+      ? 'Boost requirements assumed met: savings × 0.70 for boostable buildings; others keep their unboosted savings. '
+      : 'Unboosted savings. ')
+      + 'Rows show each bonus’s individual savings; checked rows add to the total, counting overlapping buildings once per bonus. Building boosts also apply to the cost to build. Other construction resources are unaffected. Nominal values before whole-resource rounding. Counts each displayed entry once, including alternative buildings.'
+      + (missing ? ' * Totals exclude buildings whose costs are unavailable.' : '');
+  }
   function render() {
     resizeObserver?.disconnect();
     const list = buildings.filter(matches).sort(compare);
+    renderSavings(list);
     app.querySelector('#result-count').textContent = `${list.length} building${list.length === 1 ? '' : 's'}`;
     app.querySelector('#view-explanation').textContent = view === 'tree'
       ? 'Chains run from left to right. City gates are shown on nodes. Filters hide nonmatching nodes and arrows; details retain every mapped prerequisite. Scroll wider chains sideways.'
@@ -194,6 +237,11 @@
   app.querySelector('.dialog-close').addEventListener('click',() => dialog.close());
   dialog.addEventListener('click',e => { if (e.target === dialog) { const r=dialog.getBoundingClientRect(); if (e.clientX<r.left || e.clientX>r.right || e.clientY<r.top || e.clientY>r.bottom) dialog.close(); } });
   window.addEventListener('resize',scheduleDraw);
+  savings.querySelector('#savings-boosted').addEventListener('change',e => { state.savingsBoosted=e.target.checked; render(); });
+  savings.querySelectorAll('tbody input').forEach(input => input.addEventListener('change',() => {
+    if (input.checked) state.savingsSkills.add(input.value); else state.savingsSkills.delete(input.value);
+    render();
+  }));
   document.fonts?.ready.then(scheduleDraw);
   render();
 })();

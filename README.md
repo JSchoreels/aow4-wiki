@@ -12,6 +12,10 @@ Infrastructure discounts add together. A building boost then multiplies the rema
 
 The reference assumes all six Infrastructure skills are unlocked. Boosted totals assume the building's boost requirements are met. Other discounts are outside this reference's scope.
 
+Both building views include a savings calculator for the entries matching the active filters. Independently select which Infrastructure bonuses to include and whether to assume building boosts are met. Each bonus row shows its individual gold and production savings; checked rows add to the combined total. The cost to build uses only selected bonuses and applies the 30% building boost where available. Filter changes, including search and culture, recalculate the summary. Calculator choices are preserved in the shared URL and when switching between list and tree.
+
+Construction costs come from the same pinned AoW4 Database export, joined by exact game resource ID for all 341 displayed entries. Savings apply only to gold and production; other construction resources remain unaffected and are excluded from the cost line. Values are nominal before whole-resource rounding. Each displayed entry is counted once, so a view containing alternative buildings or several cultures is a catalogue total rather than a single city's construction plan. The per-building discount badges continue to assume every matching Infrastructure skill is unlocked.
+
 ## Sources and verification
 
 - Building tags and boost-entry links were read from the installed game resource packages on 25 October 2026.
@@ -33,6 +37,7 @@ The reference assumes all six Infrastructure skills are unlocked. Boosted totals
 - `source/infrastructure-bonuses.html`: archived source of the original visual.
 - `source/requirements-analysis.txt`: prerequisite extraction notes.
 - `source/boost-analysis.txt`: supporting analysis.
+- `source/import-building-costs.cjs`: imports construction costs from a local copy of the pinned `structure-catalogue.json` export, using exact game resource IDs.
 - `.nojekyll`: serves the site as plain static files.
 
 GitHub Pages publishes the root of the `main` branch. The site needs no server or build step; building icons load from the pinned AoW4 Database commit through jsDelivr. Filter settings are shareable through URL parameters. Wide dependency chains scroll inside their own panel on smaller screens.
