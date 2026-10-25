@@ -116,6 +116,21 @@ boost totals, details, and desktop/mobile layouts.
 
 Supporting assets
 ------------------
+Construction costs are joined by exact resource ID from the pinned AoW4
+Database structure catalogue export documented in README.md. All 341 display
+entries have parsed, nonnegative costs. source/import-building-costs.cjs can
+repeat the import with a local structure-catalogue.json export. The cost field
+keeps gold, production, and any other resource tokens separately.
+
+The savings calculator uses the current filtered entries in both views.
+For each matching Infrastructure bonus, gold/production savings are base
+cost x 0.25, additionally x 0.70 if boosts are enabled and the entry is
+boostable. Selected bonus contributions add together. Cost to build uses
+base cost x (1 - 0.25 x selected matching bonuses), then the boost multiplier.
+Other cost resources are unaffected. Values precede whole-resource rounding;
+alternative entries in a view are counted separately. Bonus selection changes
+the calculator only; per-building badges still assume all bonuses unlocked.
+
 assets/buildings-data.js contains the generated display data and prerequisite
 property groups, including exact game resource IDs and relative source paths.
 The original source/infrastructure-bonuses.html is retained as an archive of
