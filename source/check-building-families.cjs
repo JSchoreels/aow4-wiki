@@ -58,6 +58,28 @@ assert.deepEqual(families.graph([]),{nodes:[],edges:[]});
   const paths=[];
   const fallbackContext={window:{},console,document:{createElementNS:() => ({setAttribute(name,value){this[name]=value;},classList:{add(){}}})}};
   vm.runInNewContext(fs.readFileSync(path.join(root,'assets/building-tree.js'),'utf8'),fallbackContext);
+  const orderColumns=fallbackContext.window.AOWBuildingTree.orderColumns;
+  const keys=names => names.map(key => ({key}));
+  const branches=[[0,keys(['Stonemason','Woodworker'])],[1,keys(['Forester','Masonic'])]];
+  const reordered=orderColumns(branches,[{from:'Stonemason',to:'Masonic'},{from:'Woodworker',to:'Forester'}]);
+  const row=(columns,key) => columns.find(([,gs]) => gs.some(g => g.key === key))[1].findIndex(g => g.key === key);
+  assert((row(reordered,'Stonemason')-row(reordered,'Woodworker'))*(row(reordered,'Masonic')-row(reordered,'Forester')) > 0);
+  assert.equal(branches[1][1][0].key,'Forester','Ordering must not mutate its input');
+  const stable=[[0,keys(['A','B','C'])],[1,keys(['X','Y'])]];
+  const connections=[{from:'A',to:'Y'},{from:'B',to:'X'},{from:'C',to:'Y'}];
+  const reduced=orderColumns(stable,connections);
+  assert(connections.every(a => connections.every(b => (row(reduced,a.from)-row(reduced,b.from))*(row(reduced,a.to)-row(reduced,b.to)) >= 0)),'Descendant ordering must also remove crossings between roots');
+  assert.equal(JSON.stringify(orderColumns(stable,connections)),JSON.stringify(reduced),'Ordering must be deterministic');
+
+  // Check the reported Stonemason / Woodworker inversion in the actual rendered catalogue.
+  const orderedRenderer=fallbackContext.window.AOWBuildingTree.create({families,node:g => `<b data-test-key="${g.key}"></b>`,esc:String});
+  for (const list of [buildings,buildings.filter(b => b.group === 'Common buildings'),buildings.slice().reverse()]) {
+    const markup=orderedRenderer.html(list);
+    const columns=[...markup.matchAll(/class="tree-column" data-rank="\d+">(.*?)<\/div>/g)].map(m => [...m[1].matchAll(/data-test-key="([^"]+)"/g)].map(m => m[1]));
+    const parent=columns.find(c => c.includes(family('Stonemason').key));
+    const child=columns.find(c => c.includes(building('Masonic Hall').key));
+    assert((parent.indexOf(family('Stonemason').key)-parent.indexOf(family('Woodworker').key))*(child.indexOf(building('Masonic Hall').key)-child.indexOf(building("Forester's Guild").key)) > 0);
+  }
   const makeNode=(x) => ({offsetWidth:100,offsetHeight:80,getBoundingClientRect:() => ({left:x,right:x+100,top:0,height:80})});
   const fakeNodes=[{...makeNode(0),dataset:{key:'a'}},{...makeNode(200),dataset:{key:'b'}}];
   const svg={querySelectorAll:() => [],querySelector:() => ({id:'arrow-0'}),appendChild:p => paths.push(p)};
