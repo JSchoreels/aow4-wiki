@@ -53,8 +53,8 @@ const conditionalFamilies = createFamilies([shared,high,later,dependent,conditio
 assert(conditionalFamilies.graph([shared,high,conditional]).edges[0].alternative);
 assert.deepEqual(families.graph([]),{nodes:[],edges:[]});
 
-(async () => {
-  // The readable column graph must survive a failed or missing layout library.
+{
+  // Arrows use measured card positions and route long dependencies above the columns.
   const paths=[];
   const fallbackContext={window:{},console,document:{createElementNS:() => ({setAttribute(name,value){this[name]=value;},classList:{add(){}}})}};
   vm.runInNewContext(fs.readFileSync(path.join(root,'assets/building-tree.js'),'utf8'),fallbackContext);
@@ -63,15 +63,15 @@ assert.deepEqual(families.graph([]),{nodes:[],edges:[]});
   const svg={querySelectorAll:() => [],querySelector:() => ({id:'arrow-0'}),appendChild:p => paths.push(p)};
   const canvas={isConnected:true,dataset:{edges:JSON.stringify([{from:'a',to:'b',alternative:false}])},querySelectorAll:() => fakeNodes,querySelector:() => svg,getBoundingClientRect:() => ({left:0,top:0})};
   const renderer=fallbackContext.window.AOWBuildingTree.create({families,node:() => '',esc:String});
-  await renderer.draw({querySelectorAll:() => [canvas]});
-  assert.equal(canvas.dataset.layout,'columns');
+  renderer.draw({querySelectorAll:() => [canvas]});
   assert.equal(paths[0].d,'M100,40 H150 V40 H200');
   assert.equal(paths[0]['marker-end'],'url(#arrow-0)');
 
-  const ELK = require('../assets/vendor/elk.bundled.js');
-  const layout = await new ELK().layout({id:'root',layoutOptions:{'elk.algorithm':'layered','elk.direction':'RIGHT','elk.edgeRouting':'ORTHOGONAL'},children:graph.nodes.map(g => ({id:g.key,width:220,height:320})),edges:graph.edges.map((e,i) => ({id:'e'+i,sources:[e.from],targets:[e.to]}))});
-  assert.equal(layout.children.length,graph.nodes.length);
-  assert(layout.children.every(n => Number.isFinite(n.x) && Number.isFinite(n.y)));
-  assert(layout.edges.every(e => e.sections?.length));
-  console.log(`Passed family, filter, alternative-route and ELK checks: ${buildings.length} entries → ${graph.nodes.length} groups, ${graph.edges.length} unique links.`);
-})().catch(error => { console.error(error); process.exitCode=1; });
+  paths.length=0;
+  canvas.dataset.edges=JSON.stringify([{from:'a',to:'b',routeAbove:true,alternative:true}]);
+  renderer.draw({querySelectorAll:() => [canvas]});
+  assert.equal(paths[0].d,'M100,40 H112 V4 H188 V40 H200');
+  const markup=renderer.html(buildings);
+  assert(markup.includes('"routeAbove":true'));
+  console.log(`Passed family, filter, alternative-route and column-routing checks: ${buildings.length} entries → ${graph.nodes.length} groups, ${graph.edges.length} unique links.`);
+}

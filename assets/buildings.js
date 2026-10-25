@@ -1,4 +1,4 @@
-/* Static catalogue with cultural building families and ELK prerequisite layout. */
+/* Static catalogue with cultural building families and column prerequisite layout. */
 (() => {
   'use strict';
   const app = document.querySelector('#building-app');

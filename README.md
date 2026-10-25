@@ -10,7 +10,7 @@ The default list order is minimum required city level, then building tier, then 
 
 Cultural replacements share one building group in both views. Families are inferred from co-suppliers of prerequisite properties at the same building tier and city gate, with at most one member per culture; unrelated alternatives such as Wizard Tower and Vampire Castle stay separate. The current 341 entries form 280 groups, including 19 families with several variants. Group cards show discount and construction-cost ranges; selecting a group compares each variant’s bonuses, boost conditions, and initial/reduced costs. Prerequisite details collapse cultural alternatives into expandable groups. Search includes the family name, and filters apply to individual variants before grouping.
 
-The tree uses [ELK’s layered layout](https://github.com/kieler/elkjs) with orthogonal arrow routing and measured card dimensions. Cultural alternatives within a family share one arrow per dependency; dashed arrows indicate alternatives between families or routes specific to some variants. Minimum city gates remain labels, with Town Hall arrows restricted to the appropriate culture. A column layout remains available if ELK cannot load. Layout results are cached, stale results are ignored after filter changes, and card size changes trigger layout updates.
+The tree uses a dependency-free column layout with right-angle arrows measured from the displayed cards. Related branches stay together, and links that skip columns travel above the cards. Cultural alternatives within a family share one arrow per dependency; dashed arrows indicate alternatives between families or routes specific to some variants. Minimum city gates remain labels, with Town Hall arrows restricted to the appropriate culture. Card size changes trigger arrow updates.
 
 Infrastructure discounts add together. A building boost then multiplies the remaining gold and production cost by 0.70, giving nominal total discounts of 47.5%, 65%, or 82.5% with one, two, or three matching Infrastructure skills. Whole-resource rounding can change the displayed costs slightly.
 
@@ -40,8 +40,7 @@ Construction costs come from the same pinned AoW4 Database export, joined by exa
 - `assets/buildings-data.js`: generated building and prerequisite data.
 - `assets/buildings.js`: shared filtering, sorting, details, and graph renderer.
 - `assets/building-families.js`: cultural family mapping and grouped dependency model.
-- `assets/building-tree.js`: accessible graph markup, ELK layout, and fallback arrow routing.
-- `assets/vendor/elk.bundled.js`: self-hosted elkjs 0.11.0 browser bundle from the published npm package, with its EPL-2.0 license in `assets/vendor/elk-LICENSE.md`.
+- `assets/building-tree.js`: accessible graph markup, column ordering, and right-angle arrow routing.
 - `assets/site.css`: responsive shared styles.
 - `source/infrastructure-bonuses.html`: archived source of the original visual.
 - `source/requirements-analysis.txt`: prerequisite extraction notes.
@@ -51,7 +50,7 @@ Construction costs come from the same pinned AoW4 Database export, joined by exa
 
 GitHub Pages publishes the root of the `main` branch. The site needs no server or build step; building icons load from the pinned AoW4 Database commit through jsDelivr. Filter settings are shareable through URL parameters. Wide dependency chains scroll inside their own panel on smaller screens.
 
-Run `node source/check-building-families.cjs` to verify cultural grouping, filter membership, unique arrows, variant-specific routes, and the bundled ELK layout against the catalogue.
+Run `node source/check-building-families.cjs` to verify cultural grouping, filter membership, unique arrows, variant-specific routes, and column arrow routing against the catalogue.
 
 ## Credits
 
