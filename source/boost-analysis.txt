@@ -1,0 +1,38 @@
+Age of Wonders 4: Infrastructure discounts and building boosts
+Checked against installed game data on 25 October 2026.
+
+Result
+Infrastructure discounts add together. A building boost is a separate 0.70 multiplier applied to the resulting resource cost. The boost applies once when the linked boost entry's requirements are met.
+Nominal remaining cost: (1 - 0.25 * matching infrastructure skills) * 0.70.
+Nominal total discount: 30%, 47.5%, 65%, or 82.5% with zero, one, two, or three matching infrastructure skills.
+Resource amounts are rounded by the engine, so displayed whole-number costs can differ from the nominal percentages.
+
+Installed data
+Content/Title/Packs/Strategic/GlobalSettings_Strategic.rpk
+Resource 000003840000049D, Economic Global Settings, record offset 0x19c4.
+0.70 resource multipliers at offsets 0x1ff8 (structure production, resource 000003D400000360), 0x2019 (draft, resource 000003D400000357), and 0x203a (gold, resource 000003D400000355).
+
+Bundled engine implementation in ResourceED.exe
+FBoostCostMultiplier serialization metadata at 0x141b2014f: settings field offset 0xd0, serialized field ID 0x30.
+FBoostEntryLink metadata at 0x1410aa850: building field offset 0x848, serialized field ID 0x52.
+TProductionBoostEntry type registration at 0x1410ac5e8: type ID 0x47505b.
+
+Final structure cost routine 0x1419d6f40:
+- 0x1419d6fbe calls 0x14109a2f0 to compute the ordinary structure cost, including Infrastructure discounts.
+- 0x1419d6fef resolves the building's boost entry from field 0x848.
+- 0x1419d702e calls 0x14109c6c0 to test its requirements.
+- If eligible, 0x1419d7071 obtains settings field 0xd0.
+- 0x1419d707d calls 0x14107f640, which multiplies resource amounts by that resource multiplier and rounds them.
+
+Infrastructure application routine 0x1419ad290:
+- Enumerates matching TStructureUpgradeDiscountProperty (type 0x471b58).
+- Uses a copy of the starting cost for each matching modifier.
+- Subtracts 1 from the stored 0.75 multiplier to obtain -0.25, then adds each computed resource delta to the cost.
+
+Eligibility check
+348 exported catalogue entries matched to local RPK definitions.
+123 entries have links to local TProductionBoostEntry resources.
+All 123 local eligibility flags agree with the exported boost_requirements field.
+The visual retains its existing removal of unused/iconless entries and merges equivalent variants, now including boost requirements in the equivalence key.
+
+This is static analysis of installed definitions and the engine bundled with the resource editor, not a live-save measurement.
