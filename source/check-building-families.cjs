@@ -83,11 +83,17 @@ assert.deepEqual(families.graph([]),{nodes:[],edges:[]});
   const makeNode=(x) => ({offsetWidth:100,offsetHeight:80,getBoundingClientRect:() => ({left:x,right:x+100,top:0,height:80})});
   const fakeNodes=[{...makeNode(0),dataset:{key:'a'}},{...makeNode(200),dataset:{key:'b'}}];
   const svg={querySelectorAll:() => [],querySelector:() => ({id:'arrow-0'}),appendChild:p => paths.push(p)};
-  const canvas={isConnected:true,dataset:{edges:JSON.stringify([{from:'a',to:'b',alternative:false}])},querySelectorAll:() => fakeNodes,querySelector:() => svg,getBoundingClientRect:() => ({left:0,top:0})};
+  const canvas={isConnected:true,dataset:{edges:JSON.stringify([{from:'a',to:'b',alternative:false}])},querySelectorAll:selector => {assert.equal(selector,'[data-graph-node]'); return fakeNodes;},querySelector:() => svg,getBoundingClientRect:() => ({left:0,top:0})};
   const renderer=fallbackContext.window.AOWBuildingTree.create({families,node:() => '',esc:String});
   renderer.draw({querySelectorAll:() => [canvas]});
   assert.equal(paths[0].d,'M100,40 H150 V40 H200');
   assert.equal(paths[0]['marker-end'],'url(#arrow-0)');
+
+  paths.length=0;
+  for (const n of fakeNodes) n.dataset.variants='2';
+  renderer.draw({querySelectorAll:() => [canvas]});
+  assert.equal(paths[0].d,'M108,40 H150 V40 H192','Connections should meet the visible family brackets');
+  for (const n of fakeNodes) delete n.dataset.variants;
 
   paths.length=0;
   canvas.dataset.edges=JSON.stringify([{from:'a',to:'b',routeAbove:true,alternative:true}]);
