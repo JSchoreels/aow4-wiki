@@ -161,7 +161,7 @@
     renderSavings(list);
     app.querySelector('#result-count').textContent = grouped.length === list.length ? `${list.length} building${list.length === 1 ? '' : 's'}` : `${grouped.length} building group${grouped.length === 1 ? '' : 's'} · ${list.length} variants`;
     app.querySelector('#view-explanation').textContent = view === 'tree'
-      ? 'Chains run left to right. Cultural replacements share one node; select a group to compare variants. City gates appear on nodes. Filters hide nonmatching variants and arrows; details retain all prerequisites. Scroll wider chains sideways.'
+      ? 'Chains run left to right. Cultural replacements share one node; select a group to compare variants. City gates appear on nodes. Filters hide nonmatching variants and arrows; details retain all prerequisites. Scroll the whole diagram sideways or vertically.'
       : (state.sort === 'city' ? 'Sorted by minimum required city level, then building tier. ' : '')+'Cultural replacements are grouped; choose a variant for exact bonuses and requirements. All matching Infrastructure skills are assumed unlocked.';
     const visible=new Set(list.map(b => b.key));
     results.innerHTML = !list.length ? '<div class="empty"><h2>No matching buildings</h2><p>Try another category or clear a filter.</p></div>' : view === 'tree' ? treeRenderer.html(grouped.flatMap(g => g.members)) : `<div class="building-grid">${grouped.map(g => familyNode(g,visible,true)).join('')}</div>`;

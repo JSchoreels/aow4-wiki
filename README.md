@@ -48,7 +48,7 @@ Construction costs come from the same pinned AoW4 Database export, joined by exa
 - `source/import-building-costs.cjs`: imports construction costs from a local copy of the pinned `structure-catalogue.json` export, using exact game resource IDs.
 - `.nojekyll`: serves the site as plain static files.
 
-GitHub Pages publishes the root of the `main` branch. The site needs no server or build step; building icons load from the pinned AoW4 Database commit through jsDelivr. Filter settings are shareable through URL parameters. Wide dependency chains scroll inside their own panel on smaller screens.
+GitHub Pages publishes the root of the `main` branch. The site needs no server or build step; building icons load from the pinned AoW4 Database commit through jsDelivr. Filter settings are shareable through URL parameters. The whole tree shares one horizontal and vertical scroll area, sized to keep its scrollbars within the viewport. On desktop, the sticky filter panel scrolls independently when its controls exceed the screen height; on mobile, filters remain in the normal page flow.
 
 Run `node source/check-building-families.cjs` to verify cultural grouping, filter membership, unique arrows, variant-specific routes, and column arrow routing against the catalogue.
 

@@ -86,7 +86,7 @@ window.AOWBuildingTree = {
         const r=Math.max(0,...parents.get(key).map(p => rank(p,next)+1));
         ranks.set(key,r); return r;
       }
-      return '<div class="tree-key"><span><i></i>Prerequisite → unlock</span><span><i class="dashed"></i>Alternative or variant-specific route</span></div>'+components.map((keys,index) => {
+      const chains=components.map((keys,index) => {
         const cols=new Map();
         // Keep catalogue order as a stable tie-breaker when branches have equal crossings.
         for (const g of nodes.filter(g => keys.includes(g.key))) {
@@ -100,8 +100,10 @@ window.AOWBuildingTree = {
         const title=(roots.length ? roots : [groups.get(keys[0])]).slice(0,3).map(g => g.name).join(' / ')+(roots.length > 3 ? ' / …' : '');
         const links=componentEdges.map(e => ({...e,routeAbove:rank(e.to) !== rank(e.from)+1}));
         const topSpace=12+links.filter(e => e.routeAbove).length*8;
-        return `<section class="tree-component" aria-label="${esc(title)} building chain"><h2 class="component-title">${esc(title)}</h2><div class="tree-scroll" tabindex="0" aria-label="Scroll building chain horizontally"><div class="tree-canvas" style="padding-top:${topSpace}px" data-edges="${esc(JSON.stringify(links))}"><svg class="tree-lines" aria-hidden="true"><defs><marker id="arrow-${index}" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z"></path></marker></defs></svg>${columns.map(([r,gs]) => `<div class="tree-column" data-rank="${r}">${gs.map(g => node(g,visible)).join('')}</div>`).join('')}</div></div></section>`;
+        return `<section class="tree-component" aria-label="${esc(title)} building chain"><h2 class="component-title">${esc(title)}</h2><div class="tree-chain"><div class="tree-canvas" style="padding-top:${topSpace}px" data-edges="${esc(JSON.stringify(links))}"><svg class="tree-lines" aria-hidden="true"><defs><marker id="arrow-${index}" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z"></path></marker></defs></svg>${columns.map(([r,gs]) => `<div class="tree-column" data-rank="${r}">${gs.map(g => node(g,visible)).join('')}</div>`).join('')}</div></div></section>`;
       }).join('')+(isolated.length ? `<section class="tree-component"><h2 class="component-title">${components.length ? 'Other buildings' : 'Buildings'} · no building connection within these filters</h2><div class="standalone-nodes">${isolated.map(g => node(g,visible)).join('')}</div></section>` : '');
+      return '<div class="tree-key"><span><i></i>Prerequisite → unlock</span><span><i class="dashed"></i>Alternative or variant-specific route</span></div>'
+        + `<div class="tree-scroll" role="region" tabindex="0" aria-label="Building tree; scroll horizontally and vertically"><div class="tree-chains">${chains}</div></div>`;
     }
     function draw(results) {
       for (const canvas of results.querySelectorAll('.tree-canvas')) {
