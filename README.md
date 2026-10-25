@@ -8,6 +8,10 @@ All 36 common buildings share one category. Food, Gold, Mana, Research, Industri
 
 The default list order is minimum required city level, then building tier, then name. Building cost tiers and Town Hall gates are shown separately. The tree draws building prerequisites from required/supplied property IDs, with alternative suppliers shown as possible routes. Details include full mapped prerequisite groups and other gates, including prerequisites outside the current filters.
 
+Cultural replacements share one building group in both views. Families are inferred from co-suppliers of prerequisite properties at the same building tier and city gate, with at most one member per culture; unrelated alternatives such as Wizard Tower and Vampire Castle stay separate. The current 341 entries form 280 groups, including 19 families with several variants. Group cards show discount and construction-cost ranges; selecting a group compares each variant’s bonuses, boost conditions, and initial/reduced costs. Prerequisite details collapse cultural alternatives into expandable groups. Search includes the family name, and filters apply to individual variants before grouping.
+
+The tree uses a dependency-free column layout with right-angle arrows measured from the displayed cards. Column ordering considers both prerequisites and descendants, retaining the arrangement with fewer crossings; catalogue order breaks ties. Related branches stay together, and links that skip columns travel above the cards. Cultural alternatives within a family share one arrow per dependency; dashed arrows indicate alternatives between families or routes specific to some variants. Minimum city gates remain labels, with Town Hall arrows restricted to the appropriate culture. Card size changes trigger arrow updates.
+
 Infrastructure discounts add together. A building boost then multiplies the remaining gold and production cost by 0.70, giving nominal total discounts of 47.5%, 65%, or 82.5% with one, two, or three matching Infrastructure skills. Whole-resource rounding can change the displayed costs slightly.
 
 The reference assumes all six Infrastructure skills are unlocked. Boosted totals assume the building's boost requirements are met. Other discounts are outside this reference's scope.
@@ -18,7 +22,7 @@ The bottom of each building card and tree node shows initial and reduced constru
 
 Hover or focus a building to preview its in-game income and effect descriptions with game resource icons. “Building effects” pins the preview; touch users can tap the building. Tooltips preserve conditional income and special rules, include boost conditions, and link to requirements. The same effects are also included in the building details. Descriptions come from the pinned AoW4 Database export, joined by exact game resource ID; five entries have no effect text in that source and explicitly say so. Source markup is rendered through an allowlist without retaining attributes or executable elements.
 
-Construction costs come from the same pinned AoW4 Database export, joined by exact game resource ID for all 341 displayed entries. Savings apply only to gold and production; other construction resources remain unaffected and are excluded from the cost line. Values are nominal before whole-resource rounding. Each displayed entry is counted once, so a view containing alternative buildings or several cultures is a catalogue total rather than a single city's construction plan. The per-building discount badges continue to assume every matching Infrastructure skill is unlocked.
+Construction costs come from the same pinned AoW4 Database export, joined by exact game resource ID for all 341 source entries. Savings apply only to gold and production; other construction resources remain unaffected and are excluded from the cost line. Values are nominal before whole-resource rounding. Each matching variant is counted once, including alternatives inside a group, so a view containing alternative buildings or several cultures is a catalogue total rather than a single city's construction plan. Card totals and active bonus badges use the selected Infrastructure bonuses and boost setting. Group tooltips and comparisons retain the effects of each matching cultural variant.
 
 ## Sources and verification
 
@@ -37,6 +41,8 @@ Construction costs come from the same pinned AoW4 Database export, joined by exa
 - `mechanics.html`: stacking rules, examples, and source explanations.
 - `assets/buildings-data.js`: generated building and prerequisite data.
 - `assets/buildings.js`: shared filtering, sorting, details, and graph renderer.
+- `assets/building-families.js`: cultural family mapping and grouped dependency model.
+- `assets/building-tree.js`: accessible graph markup, column ordering, and right-angle arrow routing.
 - `assets/site.css`: responsive shared styles.
 - `source/infrastructure-bonuses.html`: archived source of the original visual.
 - `source/requirements-analysis.txt`: prerequisite extraction notes.
@@ -46,7 +52,9 @@ Construction costs come from the same pinned AoW4 Database export, joined by exa
 - `assets/building-effects.js`: safe rendering and hover, focus, and touch interactions for building effect previews.
 - `.nojekyll`: serves the site as plain static files.
 
-GitHub Pages publishes the root of the `main` branch. The site needs no server or build step; building icons load from the pinned AoW4 Database commit through jsDelivr. Filter settings are shareable through URL parameters. Wide dependency chains scroll inside their own panel on smaller screens.
+GitHub Pages publishes the root of the `main` branch. The site needs no server or build step; building icons load from the pinned AoW4 Database commit through jsDelivr. Filter settings are shareable through URL parameters. The whole tree shares one horizontal and vertical scroll area, sized to keep its scrollbars within the viewport. On desktop, the sticky filter panel scrolls independently when its controls exceed the screen height; on mobile, filters remain in the normal page flow.
+
+Run `node source/check-building-families.cjs` to verify cultural grouping, filter membership, unique arrows, variant-specific routes, and column arrow routing against the catalogue.
 
 ## Credits
 

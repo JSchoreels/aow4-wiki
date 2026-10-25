@@ -5,7 +5,7 @@
   const files={gold:'gold',mana:'mana',food:'food',knowledge:'knowledge',structureprod:'production',production:'production',unitprod:'draft',happiness:'happiness',population:'population',garrison:'fortification',farm:'farm',farms:'farm',forester:'forester',quarry:'quarry',mine:'mine',conduit:'conduit',researchpost:'researchpost',turn:'turn',xp:'xp',souls:'souls',thralls:'thrall',bindingessence:'bindingEssence',teleporter:'teleporter',range:'range',astralechoes:'astral_echoes',chaos:'chaos',matter:'materium',nature:'nature',order:'order',shadow:'shadow',caststrategic:'strategiccombatpoints',optactical:'tacticalcombatpoints',casttactical:'tacticalcombatpoints',defensefrost:'frost_resistance',defenseblight:'blight_resistance',defensephysical:'physical_resistance',defenselightning:'lightning_resistance',defensefire:'fire_resistance',defensespirit:'spirit_resistance',damagephysical:'physical',damagefire:'fire',damageblight:'blight',damagespirit:'spirit',temphp:'tempHitpoints',sitegold:'goldWonder'};
   Object.assign(files,{hp:'health',arcana:'astral',influence:'imperium',minorcity:'free_city'});
   const labels={structureprod:'Production',unitprod:'Draft',garrison:'Fortification health',hp:'Hit Points',temphp:'Temporary Hit Points',arcana:'Astral',influence:'Imperium',medalgold:'Rank',minorcity:'Free City',rs_vassalage3:'Vassalage',monument:'Monument',bindingessence:'Binding Essence',optactical:'Combat casting points',casttactical:'Combat casting points',caststrategic:'World casting points'};
-  window.AOWBuildingEffects={create({root,buildings,iconBase,onInspect}){
+  window.AOWBuildingEffects={create({root,buildings,iconBase,onInspect,getFamily}){
     const byKey=new Map(buildings.map(b=>[b.key,b]));
     const textBase=iconBase.replace('UpgradeIcons/','Text/');
     const icon=(tag,accessible=false)=>files[tag] ? `<img class="game-resource-icon" src="${textBase+files[tag]}.png" alt="${accessible ? esc(labels[tag] || tag) : ''}" width="25" height="25" loading="lazy" decoding="async">` : `<span class="game-symbol">${esc(labels[tag] || tag.replace(/_/g,' '))}</span>`;
@@ -72,15 +72,18 @@
       popup.style.top=Math.max(8,Math.min(rect.top+24,innerHeight-height-8))+'px';
     }
     function show(target,key,keep=false){
-      const b=byKey.get(key);
+      const family=byKey.has(key) ? null : getFamily?.(key);
+      const b=byKey.get(key) || family?.members[0];
       if(!b)return;
       clearTimeout(openTimer);clearTimeout(closeTimer);
       anchor?.removeAttribute('aria-describedby');
       anchor=target;pinned=keep;
-      popup.innerHTML=`<button type="button" class="effects-close" aria-label="Close building effects">×</button><div class="effects-tooltip-heading"><img class="building-icon" src="${iconBase+esc(b.icon)}.png" alt="" width="44" height="44"><div><h2 id="effects-popup-title">${esc(b.name)}</h2><div class="meta">${b.province ? 'Province improvement' : 'City structure'}${b.tier ? ' · Tier '+['','I','II','III','IV'][b.tier] : ''}</div></div></div><div class="effects-tooltip-body">${content(b)}${b.boostable ? `<section class="effects-boost"><h3 class="effect-section-label">Boost condition</h3><div>${esc(b.boostRequirement)}</div></section>` : ''}</div><button type="button" class="effects-details" data-effects-inspect="${esc(b.key)}">Requirements & calculation →</button>`;
+      const boost=entry=>entry.boostable ? `<section class="effects-boost"><h3 class="effect-section-label">Boost condition</h3><div>${esc(entry.boostRequirement)}</div></section>` : '';
+      const body=family ? family.members.map(entry=>`<section class="family-effects-variant"><h3 class="family-effects-name">${esc(entry.name)} <small>${esc(entry.culture || 'Shared')}</small></h3>${content(entry)}${boost(entry)}</section>`).join('') : content(b)+boost(b);
+      popup.innerHTML=`<button type="button" class="effects-close" aria-label="Close building effects">×</button><div class="effects-tooltip-heading"><img class="building-icon" src="${iconBase+esc(b.icon)}.png" alt="" width="44" height="44"><div><h2 id="effects-popup-title">${esc(family?.name || b.name)}</h2><div class="meta">${family ? family.members.length+' cultural variants' : (b.province ? 'Province improvement' : 'City structure')+(b.tier ? ' · Tier '+['','I','II','III','IV'][b.tier] : '')}</div></div></div><div class="effects-tooltip-body">${body}</div><button type="button" class="effects-details" data-effects-inspect="${esc(family?.key || b.key)}">${family ? 'Compare variants' : 'Requirements & calculation'} →</button>`;
       popup.hidden=false;
       anchor.setAttribute('aria-describedby',popup.id);
-      root.querySelectorAll(`[data-effects="${b.key}"]`).forEach(n=>n.setAttribute('aria-expanded','true'));
+      root.querySelectorAll(`[data-effects="${key}"]`).forEach(n=>n.setAttribute('aria-expanded','true'));
       position();
       if(keep)popup.querySelector('.effects-close').focus({preventScroll:true});
     }
