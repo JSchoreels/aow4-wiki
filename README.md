@@ -16,6 +16,8 @@ Both building views include a savings calculator for the entries matching the ac
 
 The bottom of each building card and tree node shows initial and reduced construction costs using the calculator's selected bonuses and boost setting, with original game icons for gold, production, and mana. The aligned rows strike through initial costs and emphasize reduced costs. The displayed total discount and active bonus badges follow the same selection, including an explicit Building boost −30% badge for eligible buildings. Additional resources, such as mana, appear with unchanged costs. These reduced costs use the same calculation as the filtered total.
 
+Hover or focus a building to preview its in-game income and effect descriptions with game resource icons. “Building effects” pins the preview; touch users can tap the building. Tooltips preserve conditional income and special rules, include boost conditions, and link to requirements. The same effects are also included in the building details. Descriptions come from the pinned AoW4 Database export, joined by exact game resource ID; five entries have no effect text in that source and explicitly say so. Source markup is rendered through an allowlist without retaining attributes or executable elements.
+
 Construction costs come from the same pinned AoW4 Database export, joined by exact game resource ID for all 341 displayed entries. Savings apply only to gold and production; other construction resources remain unaffected and are excluded from the cost line. Values are nominal before whole-resource rounding. Each displayed entry is counted once, so a view containing alternative buildings or several cultures is a catalogue total rather than a single city's construction plan. The per-building discount badges continue to assume every matching Infrastructure skill is unlocked.
 
 ## Sources and verification
@@ -40,6 +42,8 @@ Construction costs come from the same pinned AoW4 Database export, joined by exa
 - `source/requirements-analysis.txt`: prerequisite extraction notes.
 - `source/boost-analysis.txt`: supporting analysis.
 - `source/import-building-costs.cjs`: imports construction costs from a local copy of the pinned `structure-catalogue.json` export, using exact game resource IDs.
+- `source/import-building-effects.cjs`: imports income and effect descriptions from the same export.
+- `assets/building-effects.js`: safe rendering and hover, focus, and touch interactions for building effect previews.
 - `.nojekyll`: serves the site as plain static files.
 
 GitHub Pages publishes the root of the `main` branch. The site needs no server or build step; building icons load from the pinned AoW4 Database commit through jsDelivr. Filter settings are shareable through URL parameters. Wide dependency chains scroll inside their own panel on smaller screens.
