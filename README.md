@@ -12,6 +12,8 @@ Cultural replacements share one building group in both views. Families are infer
 
 The tree uses a dependency-free column layout with right-angle arrows measured from the displayed cards. Column ordering considers both prerequisites and descendants, retaining the arrangement with fewer crossings; catalogue order breaks ties. Related branches stay together, and links that skip columns travel above the cards. Cultural alternatives within a family share one arrow per dependency; dashed arrows indicate alternatives between families or routes specific to some variants. Minimum city gates remain labels, with Town Hall arrows restricted to the appropriate culture. Card size changes trigger arrow updates.
 
+The tree is a full-window workspace. A collapsible sidebar holds search, category/culture controls, Infrastructure filters, and the savings calculator; the diagram fills the remaining width and height below the compact toolbar. On smaller screens the filters open as an overlay. “Jump to a chain” navigates within the diagram, including directly to standalone buildings. The page itself stays fixed while the diagram and sidebar scroll independently. The list view retains its normal page layout.
+
 Infrastructure discounts add together. A building boost then multiplies the remaining gold and production cost by 0.70, giving nominal total discounts of 47.5%, 65%, or 82.5% with one, two, or three matching Infrastructure skills. Whole-resource rounding can change the displayed costs slightly.
 
 The reference assumes all six Infrastructure skills are unlocked. Boosted totals assume the building's boost requirements are met. Other discounts are outside this reference's scope.
@@ -52,7 +54,7 @@ Construction costs come from the same pinned AoW4 Database export, joined by exa
 - `assets/building-effects.js`: safe rendering and hover, focus, and touch interactions for building effect previews.
 - `.nojekyll`: serves the site as plain static files.
 
-GitHub Pages publishes the root of the `main` branch. The site needs no server or build step; building icons load from the pinned AoW4 Database commit through jsDelivr. Filter settings are shareable through URL parameters. The whole tree shares one horizontal and vertical scroll area, sized to keep its scrollbars within the viewport. On desktop, the sticky filter panel scrolls independently when its controls exceed the screen height; on mobile, filters remain in the normal page flow.
+GitHub Pages publishes the root of the `main` branch. The site needs no server or build step; building icons load from the pinned AoW4 Database commit through jsDelivr. Filter settings are shareable through URL parameters. The tree fills the browser viewport, with one diagram scroll area and a collapsible filter sidebar. On smaller screens the sidebar opens over the diagram. Savings controls are expandable within the sidebar, and chain navigation can jump directly to standalone buildings.
 
 Run `node source/check-building-families.cjs` to verify cultural grouping, filter membership, unique arrows, variant-specific routes, and column arrow routing against the catalogue.
 
