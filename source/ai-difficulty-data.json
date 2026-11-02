@@ -1,0 +1,831 @@
+{
+  "checked": "2026-11-03",
+  "steamBuild": "25750198",
+  "executableDate": "2026-10-07",
+  "scope": "Installed pre-Manta snapshot. Only the separately labeled Gold/Mana removal is an announced Manta value.",
+  "sourcePackages": [
+    {
+      "path": "Content/Title/Packs/Strategic/GlobalSettings_Strategic.rpk",
+      "sha256": "5d39ccd300ad81fe782f340e47d6708ea79c2de486c48c4893ff828e6b9a42a4"
+    },
+    {
+      "path": "Content/Title/Packs/Strategic/StrategicAI.rpk",
+      "sha256": "a2616ea5afb1d1312f89e743637e249b9078fcd68edae5790394b9eb65f94b22"
+    },
+    {
+      "path": "Content/Title/Packs/Tactical/CoreDefinitions_Tactical.rpk",
+      "sha256": "23cee06117e502c27a3d374dd0b86aa9c542cc453ae8a31815dc559f46f064a0"
+    }
+  ],
+  "difficulties": [
+    {
+      "difficulty": "Easy",
+      "level": 1,
+      "resourceOffset": "0x39d9",
+      "armyScaler": 0.25,
+      "earliestWarTurn": 20,
+      "citiesAllowedOverCap": 0,
+      "heroRecruitmentCooldown": 4,
+      "freeCityRelationBoosting": false,
+      "grievanceMultiplierAgainstHumans": 1,
+      "warCasusBelliRequirementAdjustment": 5,
+      "warJustificationRequirementAdjustment": 5,
+      "friendlyStartingPrejudiceAllowed": true,
+      "activeBonusProperties": [
+        "AI Colonist Growth Modifier (25%) J",
+        "AI Lvl 1 Hero Recruit Cost DiscountJ",
+        "AI Lvl 1 Operation DiscountJ",
+        "AI Lvl 1 Structure Upgrade DiscountJ",
+        "AI Lvl 1 Pronouncement Cost Modifier (+10%)J",
+        "AI Player Marker Property"
+      ],
+      "incomeMultiplierInstalled": {
+        "Happiness": 1,
+        "Knowledge": 1,
+        "Imperium": 1,
+        "Food": 1,
+        "Structure Production": 1,
+        "Mana": 1,
+        "Gold": 1,
+        "Unit Production": 1,
+        "Production": 1,
+        "Souls": 1,
+        "Binding Essence": 1,
+        "Thralls": 1,
+        "Astral Echoes": 1,
+        "Wonderstone - Income Resource": 1,
+        "Binding Fragments": 1,
+        "Embalmed Sacrifices": 1,
+        "Favors - Income Resource": 1,
+        "War Spoils - Income Resource": 1
+      },
+      "incomeAddInstalled": {
+        "Wonderstone - Income Resource": 10,
+        "Souls": 10
+      },
+      "incomeMultiplierGoldManaAnnouncedManta": 1,
+      "preset": {
+        "0x2": [
+          "[#0000012200000388]9\\21",
+          "World Threat - Low"
+        ],
+        "0x5": [
+          "[#0000012200000237]9\\577",
+          "Starting Conditions - Starting Resources - Easy"
+        ],
+        "0x6": [
+          "[#000003D400000510]1\\10",
+          "AI Lord Difficulty - Lvl 1"
+        ],
+        "0xb": [
+          "[#000004A900000086]1\\98",
+          "AI Starting Bonus - None"
+        ],
+        "0xd": [
+          "[#000004880000045D]4\\6]",
+          "Tactical AI Profile - House - Easy"
+        ],
+        "0xe": [
+          "[#000004880000046E]4\\10n",
+          "Tactical AI Profile - Marauders - Easy"
+        ],
+        "0xf": [
+          "[#000004880000045D]4\\6]",
+          "Tactical AI Profile - House - Easy"
+        ],
+        "startingBonusDistribution": null
+      },
+      "enabledCostProperties": {
+        "AI Lvl 1 Pronouncement Cost Modifier (+10%)": {
+          "offset": "0x48df",
+          "resource_values": {},
+          "scalar_modifier": 1.1
+        },
+        "AI Lvl 1 Hero Recruit Cost Discount": {
+          "offset": "0x49ea",
+          "resource_values": {
+            "Souls": -0.05,
+            "Production": 0.0,
+            "Happiness": 0.0,
+            "Knowledge": 0.0,
+            "Imperium": 0.0,
+            "Food": 0.0,
+            "Structure Production": 0.0,
+            "Mana": -0.05,
+            "Gold": -0.05,
+            "Unit Production": 0.0,
+            "Binding Essence": 0.0,
+            "Thralls": 0.0,
+            "Astral Echoes": 0.0,
+            "Wonderstone - Income Resource": 0.0,
+            "Binding Fragments": 0.0,
+            "Embalmed Sacrifices": 0.0,
+            "Favors - Income Resource": 0.0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 1 Structure Upgrade Discount": {
+          "offset": "0x4d47",
+          "resource_values": {
+            "Production": 0,
+            "Happiness": 0,
+            "Knowledge": 0,
+            "Imperium": 0,
+            "Food": 0,
+            "Structure Production": 0,
+            "Mana": 0,
+            "Gold": 0,
+            "Unit Production": 0,
+            "Souls": 0,
+            "Binding Essence": 0,
+            "Thralls": 0,
+            "Astral Echoes": 0,
+            "Wonderstone - Income Resource": 0,
+            "Binding Fragments": 0,
+            "Embalmed Sacrifices": 0,
+            "Favors - Income Resource": 0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 1 Operation Discount": {
+          "offset": "0x50dd",
+          "resource_values": {
+            "Production": 0.0,
+            "Happiness": 0.0,
+            "Knowledge": 0.0,
+            "Imperium": 0.0,
+            "Food": 0.0,
+            "Structure Production": 0.0,
+            "Mana": -0.05,
+            "Gold": 0.0,
+            "Unit Production": 0.0,
+            "Souls": -0.1,
+            "Binding Essence": 0.0,
+            "Thralls": 0.0,
+            "Astral Echoes": 0.0,
+            "Wonderstone - Income Resource": 0.0,
+            "Binding Fragments": 0.0,
+            "Embalmed Sacrifices": 0.0,
+            "Favors - Income Resource": 0.0,
+            "War Spoils - Income Resource": 0.0
+          }
+        }
+      }
+    },
+    {
+      "difficulty": "Normal",
+      "level": 2,
+      "resourceOffset": "0x33d5",
+      "armyScaler": 0.5,
+      "earliestWarTurn": 15,
+      "citiesAllowedOverCap": 1,
+      "heroRecruitmentCooldown": 3,
+      "freeCityRelationBoosting": false,
+      "grievanceMultiplierAgainstHumans": 1,
+      "warCasusBelliRequirementAdjustment": 0,
+      "warJustificationRequirementAdjustment": 0,
+      "friendlyStartingPrejudiceAllowed": true,
+      "activeBonusProperties": [
+        "AI Colonist Growth Modifier (25%) J",
+        "AI Lvl 2 Hero Recruit Cost DiscountJ",
+        "AI Lvl 2 Operation DiscountJ",
+        "AI Lvl 2 Structure Upgrade DiscountJ",
+        "AI Lvl 2 City Tier Structure Upgrade DiscountJ",
+        "AI Lvl 2 Research Cost DiscountJ",
+        "AI Player Marker Property"
+      ],
+      "incomeMultiplierInstalled": {
+        "Happiness": 1,
+        "Knowledge": 1.1,
+        "Imperium": 1,
+        "Food": 1,
+        "Structure Production": 1,
+        "Mana": 1.2,
+        "Gold": 1.2,
+        "Unit Production": 1,
+        "Production": 1,
+        "Souls": 1,
+        "Binding Essence": 1,
+        "Thralls": 1,
+        "Astral Echoes": 1,
+        "Wonderstone - Income Resource": 1,
+        "Binding Fragments": 1,
+        "Embalmed Sacrifices": 1,
+        "Favors - Income Resource": 1,
+        "War Spoils - Income Resource": 1
+      },
+      "incomeAddInstalled": {
+        "Wonderstone - Income Resource": 10,
+        "Souls": 10
+      },
+      "incomeMultiplierGoldManaAnnouncedManta": 1,
+      "preset": {
+        "0x2": [
+          "[#0000012200000389]9\\22",
+          "World Threat - Normal"
+        ],
+        "0x5": [
+          "[#0000012200000238]9\\658",
+          "Starting Conditions - Starting Resources - Normal"
+        ],
+        "0x6": [
+          "[#000003D400000511]1\\11",
+          "AI Lord Difficulty - Lvl 2"
+        ],
+        "0xb": [
+          "[#000004A900000086]1\\98",
+          "AI Starting Bonus - None"
+        ],
+        "0xd": [
+          "[#000004880000045E]4\\5^",
+          "Tactical AI Profile - House - Medium"
+        ],
+        "0xe": [
+          "[#000004880000046D]4\\9m",
+          "Tactical AI Profile - Marauders - Medium"
+        ],
+        "0xf": [
+          "[#000004880000045E]4\\5^",
+          "Tactical AI Profile - House - Medium"
+        ],
+        "startingBonusDistribution": null
+      },
+      "enabledCostProperties": {
+        "AI Lvl 2 Operation Discount": {
+          "offset": "0x633a",
+          "resource_values": {
+            "Production": 0.0,
+            "Happiness": 0.0,
+            "Knowledge": 0.0,
+            "Imperium": 0.0,
+            "Food": 0.0,
+            "Structure Production": 0.0,
+            "Mana": -0.15,
+            "Gold": 0.0,
+            "Unit Production": 0.0,
+            "Souls": -0.33,
+            "Binding Essence": 0.0,
+            "Thralls": 0.0,
+            "Astral Echoes": 0.0,
+            "Wonderstone - Income Resource": 0.0,
+            "Binding Fragments": 0.0,
+            "Embalmed Sacrifices": 0.0,
+            "Favors - Income Resource": 0.0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 2 Structure Upgrade Discount": {
+          "offset": "0x66d6",
+          "resource_values": {
+            "Production": 0,
+            "Happiness": 0,
+            "Knowledge": 0,
+            "Imperium": 0,
+            "Food": 0,
+            "Structure Production": 0.85,
+            "Mana": 0,
+            "Gold": 0.85,
+            "Unit Production": 0,
+            "Souls": 0,
+            "Binding Essence": 0,
+            "Thralls": 0,
+            "Astral Echoes": 0,
+            "Wonderstone - Income Resource": 0,
+            "Binding Fragments": 0,
+            "Embalmed Sacrifices": 0,
+            "Favors - Income Resource": 0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 2 Hero Recruit Cost Discount": {
+          "offset": "0x6a7e",
+          "resource_values": {
+            "Souls": -0.15,
+            "Production": 0.0,
+            "Happiness": 0.0,
+            "Knowledge": 0.0,
+            "Imperium": 0.0,
+            "Food": 0.0,
+            "Structure Production": 0.0,
+            "Mana": -0.15,
+            "Gold": -0.15,
+            "Unit Production": 0.0,
+            "Binding Essence": 0.0,
+            "Thralls": 0.0,
+            "Astral Echoes": 0.0,
+            "Wonderstone - Income Resource": 0.0,
+            "Binding Fragments": 0.0,
+            "Embalmed Sacrifices": 0.0,
+            "Favors - Income Resource": 0.0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 2 City Tier Structure Upgrade Discount": {
+          "offset": "0x6ddb",
+          "resource_values": {
+            "Production": 0.7,
+            "Happiness": 0,
+            "Knowledge": 0,
+            "Imperium": 0,
+            "Food": 0,
+            "Structure Production": 0,
+            "Mana": 0,
+            "Gold": 0.6,
+            "Unit Production": 0,
+            "Souls": 0,
+            "Binding Essence": 0,
+            "Thralls": 0,
+            "Astral Echoes": 0,
+            "Wonderstone - Income Resource": 0,
+            "Binding Fragments": 0,
+            "Embalmed Sacrifices": 0,
+            "Favors - Income Resource": 0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 2 Research Cost Discount": {
+          "offset": "0x8a16",
+          "resource_values": {},
+          "scalar_modifier": -0.1
+        }
+      }
+    },
+    {
+      "difficulty": "Hard",
+      "level": 3,
+      "resourceOffset": "0x2c77",
+      "armyScaler": 0.75,
+      "earliestWarTurn": 10,
+      "citiesAllowedOverCap": 2,
+      "heroRecruitmentCooldown": 2,
+      "freeCityRelationBoosting": true,
+      "grievanceMultiplierAgainstHumans": 1.2,
+      "warCasusBelliRequirementAdjustment": -5,
+      "warJustificationRequirementAdjustment": -5,
+      "friendlyStartingPrejudiceAllowed": false,
+      "activeBonusProperties": [
+        "AI Colonist Growth Modifier (25%) J",
+        "AI Lvl 3 Hero Recruit Cost DiscountJ",
+        "AI Lvl 3 Operation DiscountJ",
+        "AI Lvl 3 Structure Upgrade DiscountJ",
+        "AI Lvl 3 Unit Upkeep DiscountJ",
+        "AI Lvl 3 Pronouncement Cost Modifier (-10%)J",
+        "AI Lvl 3 City Tier Structure Upgrade DiscountJ",
+        "AI Lvl 3 Unit Starting rank Property J",
+        "AI Lvl 3 Research Cost DiscountJ",
+        "AI Lvl 3 Summon Unit Rank BonusJ",
+        "AI Player Marker Property"
+      ],
+      "incomeMultiplierInstalled": {
+        "Happiness": 1.2,
+        "Knowledge": 1.2,
+        "Imperium": 1,
+        "Food": 1,
+        "Structure Production": 1,
+        "Mana": 1.3,
+        "Gold": 1.3,
+        "Unit Production": 1,
+        "Production": 1,
+        "Souls": 1,
+        "Binding Essence": 1,
+        "Thralls": 1,
+        "Astral Echoes": 1,
+        "Wonderstone - Income Resource": 1,
+        "Binding Fragments": 1,
+        "Embalmed Sacrifices": 1,
+        "Favors - Income Resource": 1,
+        "War Spoils - Income Resource": 1
+      },
+      "incomeAddInstalled": {
+        "Wonderstone - Income Resource": 10,
+        "Souls": 10
+      },
+      "incomeMultiplierGoldManaAnnouncedManta": 1,
+      "preset": {
+        "0x2": [
+          "[#0000012200000389]9\\25",
+          "World Threat - Normal"
+        ],
+        "0x5": [
+          "[#0000012200000239]9\\669",
+          "Starting Conditions - Starting Resources - Hard"
+        ],
+        "0x6": [
+          "[#000003D400000512]1\\12",
+          "AI Lord Difficulty - Lvl 3"
+        ],
+        "0xb": [
+          "[#000004A90000008A]1\\102",
+          "AI Starting Bonus - Random"
+        ],
+        "0xd": [
+          "[#000004880000045E]4\\5^",
+          "Tactical AI Profile - House - Medium"
+        ],
+        "0xe": [
+          "[#000004880000046D]4\\9m",
+          "Tactical AI Profile - Marauders - Medium"
+        ],
+        "0xf": [
+          "[#000004880000045E]4\\5^",
+          "Tactical AI Profile - House - Medium"
+        ],
+        "startingBonusDistribution": 0.33000001311302185
+      },
+      "enabledCostProperties": {
+        "AI Lvl 3 Research Cost Discount": {
+          "offset": "0x71c1",
+          "resource_values": {},
+          "scalar_modifier": -0.15
+        },
+        "AI Lvl 3 Unit Starting rank Property ": {
+          "offset": "0x7278",
+          "resource_values": {}
+        },
+        "AI Lvl 3 City Tier Structure Upgrade Discount": {
+          "offset": "0x73b3",
+          "resource_values": {
+            "Production": 0.5,
+            "Happiness": 0,
+            "Knowledge": 0,
+            "Imperium": 0,
+            "Food": 0,
+            "Structure Production": 0,
+            "Mana": 0,
+            "Gold": 0.5,
+            "Unit Production": 0,
+            "Souls": 0,
+            "Binding Essence": 0,
+            "Thralls": 0,
+            "Astral Echoes": 0,
+            "Wonderstone - Income Resource": 0,
+            "Binding Fragments": 0,
+            "Embalmed Sacrifices": 0,
+            "Favors - Income Resource": 0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 3 Pronouncement Cost Modifier (-10%)": {
+          "offset": "0x7799",
+          "resource_values": {},
+          "scalar_modifier": 0.9
+        },
+        "AI Lvl 3 Hero Recruit Cost Discount": {
+          "offset": "0x78a2",
+          "resource_values": {
+            "Souls": -0.33,
+            "Production": 0.0,
+            "Happiness": 0.0,
+            "Knowledge": 0.0,
+            "Imperium": 0.0,
+            "Food": 0.0,
+            "Structure Production": 0.0,
+            "Mana": -0.33,
+            "Gold": -0.33,
+            "Unit Production": 0.0,
+            "Binding Essence": 0.0,
+            "Thralls": 0.0,
+            "Astral Echoes": 0.0,
+            "Wonderstone - Income Resource": 0.0,
+            "Binding Fragments": 0.0,
+            "Embalmed Sacrifices": 0.0,
+            "Favors - Income Resource": 0.0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 3 Structure Upgrade Discount": {
+          "offset": "0x7bff",
+          "resource_values": {
+            "Production": 0,
+            "Happiness": 0,
+            "Knowledge": 0,
+            "Imperium": 0,
+            "Food": 0,
+            "Structure Production": 0.66,
+            "Mana": 0,
+            "Gold": 0.66,
+            "Unit Production": 0,
+            "Souls": 0,
+            "Binding Essence": 0,
+            "Thralls": 0,
+            "Astral Echoes": 0,
+            "Wonderstone - Income Resource": 0,
+            "Binding Fragments": 0,
+            "Embalmed Sacrifices": 0,
+            "Favors - Income Resource": 0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 3 Operation Discount": {
+          "offset": "0x7fa7",
+          "resource_values": {
+            "Production": 0.0,
+            "Happiness": 0.0,
+            "Knowledge": 0.0,
+            "Imperium": 0.0,
+            "Food": 0.0,
+            "Structure Production": 0.0,
+            "Mana": -0.33,
+            "Gold": 0.0,
+            "Unit Production": 0.0,
+            "Souls": -0.4,
+            "Binding Essence": 0.0,
+            "Thralls": 0.0,
+            "Astral Echoes": 0.0,
+            "Wonderstone - Income Resource": 0.0,
+            "Binding Fragments": 0.0,
+            "Embalmed Sacrifices": 0.0,
+            "Favors - Income Resource": 0.0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 3 Unit Upkeep Discount": {
+          "offset": "0x8333",
+          "resource_values": {
+            "Souls": -0.15,
+            "Production": 0.0,
+            "Happiness": 0.0,
+            "Knowledge": 0.0,
+            "Imperium": -0.15,
+            "Food": 0.0,
+            "Structure Production": -0.33,
+            "Mana": -0.15,
+            "Gold": -0.15,
+            "Unit Production": 0.0,
+            "Binding Essence": 0.0,
+            "Thralls": 0.0,
+            "Astral Echoes": 0.0,
+            "Wonderstone - Income Resource": 0.0,
+            "Binding Fragments": 0.0,
+            "Embalmed Sacrifices": 0.0,
+            "Favors - Income Resource": 0.0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 3 Summon Unit Rank Bonus": {
+          "offset": "0xa473",
+          "resource_values": {}
+        }
+      }
+    },
+    {
+      "difficulty": "Brutal",
+      "level": 4,
+      "resourceOffset": "0x2355",
+      "armyScaler": 1.0,
+      "earliestWarTurn": 5,
+      "citiesAllowedOverCap": 3,
+      "heroRecruitmentCooldown": 1,
+      "freeCityRelationBoosting": true,
+      "grievanceMultiplierAgainstHumans": 1.4,
+      "warCasusBelliRequirementAdjustment": -10,
+      "warJustificationRequirementAdjustment": -10,
+      "friendlyStartingPrejudiceAllowed": false,
+      "activeBonusProperties": [
+        "AI Colonist Growth Modifier (25%) J",
+        "AI Lvl 4 Hero Recruit Cost DiscountJ",
+        "AI Lvl 4 Operation DiscountJ",
+        "AI Lvl 4 Structure Upgrade DiscountJ",
+        "AI Lvl 4 Unit Upkeep DiscountJ",
+        "AI Lvl 4 Unit Starting Rank Property (Tier 1 and 2)J",
+        "AI Lvl 4 Pronouncement Cost Modifier (-20%)J",
+        "AI Lvl 4 City Tier Structure Upgrade DiscountJ",
+        "AI Lvl 4 Research Cost DiscountJ",
+        "AI Lvl 4 Summon Unit Rank Bonus (Tier 1 and 2)J",
+        "AI Player Marker PropertyJ",
+        "AI Lvl 4 Summon Unit Rank Bonus (Tier 3)J",
+        "AI Lvl 4 Summon Unit Rank Bonus (Tier 4 and 5)J",
+        "AI Lvl 4 Unit Starting Rank Property (Tier 3)J",
+        "AI Lvl 4 Unit Starting Rank Property (Tier 4 and 5)J",
+        "AI Lvl 4 City Expansion Discount"
+      ],
+      "incomeMultiplierInstalled": {
+        "Happiness": 1.2,
+        "Knowledge": 1.3,
+        "Imperium": 1,
+        "Food": 1,
+        "Structure Production": 1,
+        "Mana": 1.4,
+        "Gold": 1.4,
+        "Unit Production": 1,
+        "Production": 1,
+        "Souls": 1,
+        "Binding Essence": 1,
+        "Thralls": 1,
+        "Astral Echoes": 1,
+        "Wonderstone - Income Resource": 1,
+        "Binding Fragments": 1,
+        "Embalmed Sacrifices": 1,
+        "Favors - Income Resource": 1,
+        "War Spoils - Income Resource": 1
+      },
+      "incomeAddInstalled": {
+        "Wonderstone - Income Resource": 10,
+        "Souls": 10
+      },
+      "incomeMultiplierGoldManaAnnouncedManta": 1,
+      "preset": {
+        "0x2": [
+          "[#000001220000038A]9\\23",
+          "World Threat - High"
+        ],
+        "0x5": [
+          "[#0000012200000239]9\\669",
+          "Starting Conditions - Starting Resources - Hard"
+        ],
+        "0x6": [
+          "[#000003D400000513]1\\13",
+          "AI Lord Difficulty - Lvl 4"
+        ],
+        "0xb": [
+          "[#000004A90000008A]1\\102",
+          "AI Starting Bonus - Random"
+        ],
+        "0xd": [
+          "[#000004880000045F]4\\4_",
+          "Tactical AI Profile - House - Hard"
+        ],
+        "0xe": [
+          "[#000004880000046C]4\\8l",
+          "Tactical AI Profile - Marauders - Hard"
+        ],
+        "0xf": [
+          "[#000004880000045F]4\\4_",
+          "Tactical AI Profile - House - Hard;FG"
+        ],
+        "startingBonusDistribution": 0.6600000262260437
+      },
+      "enabledCostProperties": {
+        "AI Lvl 4 Summon Unit Rank Bonus (Tier 1 and 2)": {
+          "offset": "0x8acd",
+          "resource_values": {}
+        },
+        "AI Lvl 4 Research Cost Discount": {
+          "offset": "0x8c07",
+          "resource_values": {},
+          "scalar_modifier": -0.2
+        },
+        "AI Lvl 4 City Tier Structure Upgrade Discount": {
+          "offset": "0x8cce",
+          "resource_values": {
+            "Production": 0.4,
+            "Happiness": 0,
+            "Knowledge": 0,
+            "Imperium": 0,
+            "Food": 0,
+            "Structure Production": 0,
+            "Mana": 0,
+            "Gold": 0.4,
+            "Unit Production": 0,
+            "Souls": 0,
+            "Binding Essence": 0,
+            "Thralls": 0,
+            "Astral Echoes": 0,
+            "Wonderstone - Income Resource": 0,
+            "Binding Fragments": 0,
+            "Embalmed Sacrifices": 0,
+            "Favors - Income Resource": 0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 4 Pronouncement Cost Modifier (-20%)": {
+          "offset": "0x90b4",
+          "resource_values": {},
+          "scalar_modifier": 0.8
+        },
+        "AI Lvl 4 Unit Starting Rank Property (Tier 1 and 2)": {
+          "offset": "0x91c0",
+          "resource_values": {}
+        },
+        "AI Lvl 4 Hero Recruit Cost Discount": {
+          "offset": "0x92ff",
+          "resource_values": {
+            "Souls": -0.6,
+            "Production": 0.0,
+            "Happiness": 0.0,
+            "Knowledge": 0.0,
+            "Imperium": 0.0,
+            "Food": 0.0,
+            "Structure Production": 0.0,
+            "Mana": -0.6,
+            "Gold": -0.6,
+            "Unit Production": 0.0,
+            "Binding Essence": 0.0,
+            "Thralls": 0.0,
+            "Astral Echoes": 0.0,
+            "Wonderstone - Income Resource": 0.0,
+            "Binding Fragments": 0.0,
+            "Embalmed Sacrifices": 0.0,
+            "Favors - Income Resource": 0.0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 4 Structure Upgrade Discount": {
+          "offset": "0x965c",
+          "resource_values": {
+            "Production": 0,
+            "Happiness": 0,
+            "Knowledge": 0,
+            "Imperium": 0,
+            "Food": 0,
+            "Structure Production": 0.5,
+            "Mana": 0,
+            "Gold": 0.5,
+            "Unit Production": 0,
+            "Souls": 0,
+            "Binding Essence": 0,
+            "Thralls": 0,
+            "Astral Echoes": 0,
+            "Wonderstone - Income Resource": 0,
+            "Binding Fragments": 0,
+            "Embalmed Sacrifices": 0,
+            "Favors - Income Resource": 0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 4 Operation Discount": {
+          "offset": "0x9a04",
+          "resource_values": {
+            "Production": 0.0,
+            "Happiness": 0.0,
+            "Knowledge": 0.0,
+            "Imperium": 0.0,
+            "Food": 0.0,
+            "Structure Production": 0.0,
+            "Mana": -0.5,
+            "Gold": 0.0,
+            "Unit Production": 0.0,
+            "Souls": -0.66,
+            "Binding Essence": 0.0,
+            "Thralls": 0.0,
+            "Astral Echoes": 0.0,
+            "Wonderstone - Income Resource": 0.0,
+            "Binding Fragments": 0.0,
+            "Embalmed Sacrifices": 0.0,
+            "Favors - Income Resource": 0.0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 4 Unit Upkeep Discount": {
+          "offset": "0x9d90",
+          "resource_values": {
+            "Souls": -0.3,
+            "Production": 0.0,
+            "Happiness": 0.0,
+            "Knowledge": 0.0,
+            "Imperium": -0.3,
+            "Food": 0.0,
+            "Structure Production": 0.0,
+            "Mana": -0.3,
+            "Gold": -0.3,
+            "Unit Production": 0.0,
+            "Binding Essence": 0.0,
+            "Thralls": 0.0,
+            "Astral Echoes": 0.0,
+            "Wonderstone - Income Resource": 0.0,
+            "Binding Fragments": 0.0,
+            "Embalmed Sacrifices": 0.0,
+            "Favors - Income Resource": 0.0,
+            "War Spoils - Income Resource": 0.0
+          }
+        },
+        "AI Lvl 4 Unit Starting Rank Property (Tier 3)": {
+          "offset": "0xb87f",
+          "resource_values": {}
+        },
+        "AI Lvl 4 Unit Starting Rank Property (Tier 4 and 5)": {
+          "offset": "0xb991",
+          "resource_values": {}
+        },
+        "AI Lvl 4 Summon Unit Rank Bonus (Tier 3)": {
+          "offset": "0xbaca",
+          "resource_values": {}
+        },
+        "AI Lvl 4 Summon Unit Rank Bonus (Tier 4 and 5)": {
+          "offset": "0xbbd7",
+          "resource_values": {}
+        },
+        "AI Lvl 4 City Expansion Discount": {
+          "offset": "0xc2a1",
+          "resource_values": {}
+        }
+      }
+    }
+  ],
+  "tacticalDescriptions": {
+    "TACTICAL_AI_PROFILE@EASY@DESCRIPTION": "The AI will position their units more carelessly and focus less on killing units.",
+    "TACTICAL_AI_PROFILE@EASY@NAME": "Forgiving",
+    "TACTICAL_AI_PROFILE@HARD@DESCRIPTION": "The AI will use optimal positioning and focus on killing units, as well as deal 20% more damage and receive 20% less damage.",
+    "TACTICAL_AI_PROFILE@HARD@NAME": "Challenging+",
+    "TACTICAL_AI_PROFILE@MEDIUM@DESCRIPTION": "The AI will use optimal positioning and focus on killing units.",
+    "TACTICAL_AI_PROFILE@MEDIUM@NAME": "Challenging"
+  },
+  "tacticalComparison": {
+    "6": true,
+    "11": true,
+    "13": true,
+    "14": true,
+    "15": true,
+    "16": false
+  }
+}
