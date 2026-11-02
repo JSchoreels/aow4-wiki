@@ -1,0 +1,44 @@
+AI difficulty comparison — checked 3 November 2026
+
+Snapshot
+Steam build 25750198; installed AOW4.exe timestamp 7 October 2026.
+The page describes this pre-Manta installation. The separately labeled Manta
+Gold/Mana income removal comes from the official update notes:
+https://steamcommunity.com/app/1669000/announcements/
+No before/after comparison against final Manta binaries has been performed.
+
+Sources
+GlobalSettings_Strategic.rpk: Quick Settings resources select strategic level,
+tactical profile, world threat, and random starting-bonus distribution.
+StrategicAI.rpk: AI Lord Difficulty Lvl 1 through 4 and their linked properties.
+CoreDefinitions_Tactical.rpk: House Easy, Medium, and Hard tactical profiles.
+ResourceED.exe: serialization field names, types, defaults, and editor help.
+Language/EN/EN.MO: Forgiving, Challenging, and Challenging+ descriptions.
+Source-package hashes and decoded records are in ai-difficulty-data.json.
+
+Method and interpretation
+Resource names and IDs were read from the local RPK records. Scalar field IDs
+were matched to editor serialization definitions. Omitted fields use editor
+defaults (including Brutal's one-turn hero cooldown and relation boosting).
+Only bonus properties linked by the difficulty records count as enabled.
+Legacy Unit Discount and some Unit Upkeep Discount records remain in the
+package, but their presence alone does not mean the AI receives the bonus.
+
+Army scaler 0.25/0.50/0.75/1.00 means an army-power target 25/50/75/100 percent
+above the strongest human, not free units or guaranteed army strength.
+War-turn and CB/justification values are permission gates and adjustments.
+The city allowance is permission to exceed the cap, not an increase to it.
+General building costs use remaining-cost factors 1/0.85/0.66/0.50 for
+Easy/Normal/Hard/Brutal. Town Halls have additional specific modifiers.
+Rank rows cover recruited units; summoned units have separate properties.
+
+Tactical profiles
+The Medium and Hard profiles have matching non-label decision fields except
+their damage modifier block. Hard adds +0.20 damage dealt and -0.20 received.
+The English names are Challenging and Challenging+. Easy is Forgiving.
+This establishes profile settings; it does not demonstrate deeper planning.
+
+Limits
+This is static analysis rather than an observation from a running save.
+Story scripts, mods, custom setup, and other faction bonuses can override or
+combine with these values. Nominal cost modifiers are before rounding.

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Compare Easy, Normal, Hard, and Brutal AI in Age of Wonders 4: battle profiles, economic bonuses, diplomacy, army targets, and the Manta income change.">
+<title>AI difficulty · Age of Wonders 4</title>
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/ai-difficulty.css">
+</head>
+<body>
+<header class="topbar"><div class="shell"><a class="brand" href="./">Age of Wonders <span>4</span></a><nav aria-label="Main navigation"><a href="./">Home</a><a href="buildings.html">Buildings</a><a href="building-tree.html">Building tree</a><a href="mechanics.html">How bonuses stack</a><a href="repeatables.html">Repeatable rites</a><a href="ai-difficulty.html" aria-current="page">AI difficulty</a></nav></div></header>
+<main class="shell ai-page">
+<section class="intro"><div class="eyebrow">Easy → Normal → Hard → Brutal</div><h1>What makes the AI harder?</h1><p>Compare battle behavior, economic advantages, and the rules that shape an AI empire. Normal and Hard share a tactical profile; Hard changes the resources and strategic freedom behind it.</p></section>
+<div class="ai-version" role="note"><strong>Installed snapshot · checked 3 November 2026</strong><p>Tables were decoded from Steam build 25750198, whose executable is dated 7 October 2026. The announced Manta removal of Gold and Mana income multipliers is shown separately. The remaining values describe this installed snapshot; they have not been compared against the final Manta binaries.</p></div>
+<nav class="ai-jump" aria-label="On this page"><a href="#presets">Default presets</a><a href="#economy">Economy</a><a href="#strategy">Strategic behavior</a><a href="#ranks">Unit ranks</a><a href="#sources">Sources & limits</a></nav>
+<p class="ai-scroll-hint">Scroll each table sideways to compare all four difficulties. Row labels stay visible.</p>
+<div class="ai-takeaways"><div><span class="eyebrow">Easy → Normal</span><h2>More careful in battle</h2><p>Forgiving gives way to Challenging, which prioritizes kills and uses more careful positioning.</p></div><div><span class="eyebrow">Normal → Hard</span><h2>More campaign pressure</h2><p>The same battle profile, with larger army targets, stronger discounts, and earlier permission to declare war.</p></div><div><span class="eyebrow">Hard → Brutal</span><h2>Stronger troops and economy</h2><p>Challenging+ adds damage modifiers. Strategic bonuses increase again, and world threat rises to High.</p></div></div>
+<section class="ai-section" id="presets" aria-labelledby="presets-title"><div class="ai-section-heading"><span class="eyebrow">01 / The realm preset</span><h2 id="presets-title">Several settings change together</h2><p>These are the default combinations. Advanced realm settings and individual faction settings can override them.</p></div>
+<div class="ai-table-wrap" role="region" aria-labelledby="presets-title" tabindex="0"><table class="ai-table"><caption class="sr-only">Default realm preset settings from Easy through Brutal</caption><thead><tr><th scope="col">Setting</th><th scope="col">Easy</th><th scope="col">Normal</th><th scope="col">Hard</th><th scope="col">Brutal</th></tr></thead><tbody>
+<tr><th scope="row">Strategic AI level</th><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+<tr><th scope="row">Tactical AI profile</th><td>Forgiving</td><td>Challenging</td><td>Challenging</td><td>Challenging+</td></tr>
+<tr><th scope="row">World threat</th><td>Low</td><td>Normal</td><td>Normal</td><td>High</td></tr>
+<tr><th scope="row">Profile damage dealt bonus</th><td>None</td><td>None</td><td>None</td><td>+20%</td></tr>
+<tr><th scope="row">Profile damage received reduction</th><td>None</td><td>None</td><td>None</td><td>20%</td></tr>
+<tr><th scope="row">AI slots given random extra starting bonuses</th><td>None</td><td>None</td><td>~33%</td><td>~66%</td></tr>
+</tbody></table></div><p class="ai-note">Challenging and Challenging+ have matching tactical decision settings in this snapshot. Challenging+ adds the damage modifiers above. Forgiving reduces kill prioritization and uses less careful positioning. These are settings and scoring rules, rather than evidence of deeper strategic planning.</p></section>
+<section class="ai-section" id="economy" aria-labelledby="economy-title"><div class="ai-section-heading"><span class="eyebrow">02 / Income and costs</span><h2 id="economy-title">What the AI can afford</h2><p>Discounts below are the difficulty-specific modifiers, before other faction bonuses. Only properties linked to each difficulty preset are counted.</p></div>
+<div class="ai-table-wrap" role="region" aria-labelledby="economy-title" tabindex="0"><table class="ai-table"><caption class="sr-only">AI income bonuses and cost discounts, including the announced Manta change</caption><thead><tr><th scope="col">Bonus or discount</th><th scope="col">Easy</th><th scope="col">Normal</th><th scope="col">Hard</th><th scope="col">Brutal</th></tr></thead><tbody>
+<tr class="ai-before"><th scope="row">Gold / Mana income bonus <span class="ai-label">Installed, before Manta</span></th><td>None</td><td>+20%</td><td>+30%</td><td>+40%</td></tr>
+<tr class="ai-patch"><th scope="row">Gold / Mana income bonus <span class="ai-label">Announced Manta change</span></th><td>None</td><td>Removed</td><td>Removed</td><td>Removed</td></tr>
+<tr><th scope="row">Knowledge income bonus</th><td>None</td><td>+10%</td><td>+20%</td><td>+30%</td></tr>
+<tr><th scope="row">Research-cost discount</th><td>None</td><td>10%</td><td>15%</td><td>20%</td></tr>
+<tr><th scope="row">Gold / Mana unit-upkeep discount</th><td>None</td><td>None</td><td>15%</td><td>30%</td></tr>
+<tr><th scope="row">Hero recruitment-cost discount</th><td>5%</td><td>15%</td><td>33%</td><td>60%</td></tr>
+<tr><th scope="row">Strategic spell / operation Mana-cost discount</th><td>5%</td><td>15%</td><td>33%</td><td>50%</td></tr>
+<tr><th scope="row">Strategic spell / operation Souls-cost discount</th><td>10%</td><td>33%</td><td>40%</td><td>66%</td></tr>
+<tr><th scope="row">General structure Gold / Production-cost discount <a class="ai-footnote" href="#structure-note" aria-label="Note on structure discounts">[1]</a></th><td>None</td><td>15%</td><td>34%</td><td>50%</td></tr>
+<tr><th scope="row">Ordinary unit recruitment-cost discount</th><td>None</td><td>None</td><td>None</td><td>None</td></tr>
+</tbody></table></div><p class="ai-note" id="structure-note">[1] Town Halls have additional specific modifiers; this row gives the general structure modifier. Hard's 34% is the literal 0.66 remaining-cost multiplier in the files.</p>
+<div class="ai-example"><strong>Cheaper upkeep still matters after Manta.</strong><p>An army with 100 Gold upkeep before difficulty modifiers costs Hard AI 85 and Brutal AI 70. At the same upkeep budget, 30% cheaper upkeep could support about 43% more equivalent troops. Recruitment costs and available resources still constrain that army.</p></div></section>
+<section class="ai-section" id="strategy" aria-labelledby="strategy-title"><div class="ai-section-heading"><span class="eyebrow">03 / World-map behavior</span><h2 id="strategy-title">When the AI is allowed to push</h2><p>Higher levels change army targets, expansion permissions, recruitment timing, and diplomacy thresholds.</p></div>
+<div class="ai-table-wrap" role="region" aria-labelledby="strategy-title" tabindex="0"><table class="ai-table"><caption class="sr-only">Strategic AI behavior and diplomacy settings</caption><thead><tr><th scope="col">Rule</th><th scope="col">Easy</th><th scope="col">Normal</th><th scope="col">Hard</th><th scope="col">Brutal</th></tr></thead><tbody>
+<tr><th scope="row">Target army power versus strongest human <a class="ai-footnote" href="#army-note" aria-label="Note on army targets">[2]</a></th><td>125%</td><td>150%</td><td>175%</td><td>200%</td></tr>
+<tr><th scope="row">Earliest war-declaration setting</th><td>Turn 20</td><td>Turn 15</td><td>Turn 10</td><td>Turn 5</td></tr>
+<tr><th scope="row">Allowed cities above city cap <a class="ai-footnote" href="#city-note" aria-label="Note on city-cap permission">[3]</a></th><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+<tr><th scope="row">Hero recruitment cooldown</th><td>4 turns</td><td>3 turns</td><td>2 turns</td><td>1 turn</td></tr>
+<tr><th scope="row">Spend Imperium to boost Free City relations</th><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><th scope="row">Grievance multiplier against humans</th><td>×1</td><td>×1</td><td>×1.2</td><td>×1.4</td></tr>
+<tr><th scope="row">War CB / justification requirement adjustment <a class="ai-footnote" href="#war-note" aria-label="Note on war requirements">[4]</a></th><td>+5</td><td>0</td><td>−5</td><td>−10</td></tr>
+<tr><th scope="row">Friendly starting diplomatic bias permitted</th><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+</tbody></table></div><div class="ai-note"><p id="army-note">[2] A recruitment target, not free troops or guaranteed military strength. The stored army scalers are 0.25, 0.50, 0.75, and 1.00 above the strongest human.</p><p id="city-note">[3] Permission to exceed the cap; city-cap penalties can still apply.</p><p id="war-note">[4] An adjustment to the underlying requirements, not the complete threshold. Lower values make declaring war easier. Reaching the listed turn does not force a war.</p></div></section>
+<section class="ai-section" id="ranks" aria-labelledby="ranks-title"><div class="ai-section-heading"><span class="eyebrow">04 / Army quality</span><h2 id="ranks-title">Recruited units start with more ranks</h2><p>These are rank bonuses for recruited units. Summoning has separate linked properties.</p></div>
+<div class="ai-table-wrap" role="region" aria-labelledby="ranks-title" tabindex="0"><table class="ai-table"><caption class="sr-only">Extra starting ranks for recruited units by tier</caption><thead><tr><th scope="col">Unit tier</th><th scope="col">Easy</th><th scope="col">Normal</th><th scope="col">Hard</th><th scope="col">Brutal</th></tr></thead><tbody>
+<tr><th scope="row">Tier 1–2</th><td>No bonus</td><td>No bonus</td><td>+1 rank</td><td>+3 ranks</td></tr>
+<tr><th scope="row">Tier 3</th><td>No bonus</td><td>No bonus</td><td>No bonus</td><td>+2 ranks</td></tr>
+<tr><th scope="row">Tier 4–5</th><td>No bonus</td><td>No bonus</td><td>No bonus</td><td>+1 rank</td></tr>
+</tbody></table></div></section>
+<section class="ai-section ai-sources" id="sources" aria-labelledby="sources-title"><div class="eyebrow">Sources & limits</div><h2 id="sources-title">A comparison you can inspect</h2><ul><li>Default presets: <code>GlobalSettings_Strategic.rpk</code>. Strategic levels, active bonus-property links, and cost definitions: <code>StrategicAI.rpk</code>. Battle profiles: <code>CoreDefinitions_Tactical.rpk</code>.</li><li>Editor serialization definitions supplied field names and defaults. The English localization supplied Forgiving, Challenging, and Challenging+ names and descriptions.</li><li>The comparison uses active links. Older unit-recruitment and upkeep-discount definitions remain in the package without being enabled by some presets.</li><li>This is static analysis of installed definitions, not a measurement from a running save. Story realms, mods, faction traits, custom settings, and other bonuses can change actual behavior or costs.</li><li>Manta's income-multiplier removal comes from the <a href="https://steamcommunity.com/app/1669000/announcements/">official Manta update notes</a>. Other rows remain the installed pre-Manta baseline until an updated binary comparison is available.</li></ul><p><a href="source/ai-difficulty-analysis.txt">Analysis notes</a> · <a href="source/ai-difficulty-data.json">Decoded comparison data</a> · <a href="https://github.com/JSchoreels/aow4-wiki">Repository</a></p></section>
+</main>
+<footer class="footer"><div class="shell"><p>Unofficial fan reference · Age of Wonders 4 © Triumph Studios / Paradox Interactive.</p><a href="./">Back to the atlas</a></div></footer>
+</body>
+</html>
