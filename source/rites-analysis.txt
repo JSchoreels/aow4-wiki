@@ -1,0 +1,68 @@
+Repeatable Empire rites — installed resource verification
+Checked: 2 November 2026. Installed Steam build: 25750198.
+
+Result
+------
+20 repeatables are defined in the General and six affinity branches.
+19 use Standard Repeating Rite - Repeat Settings (0000048B00000FA8):
+  +50 Imperium and +50 affinity points per repeat.
+Expanded Governance uses City Cap Skill - Repeat Settings (0000048B00000F91):
+  +300 Imperium per repeat; no affinity recharge after the initial unlock.
+
+Cost of use n = base + (n - 1) * increase.
+Total for n purchases = n * base + increase * n * (n - 1) / 2.
+First-use affinity is the unlock threshold. Standard rite affinity for use n
+is the initial threshold + (n - 1) * 50; accumulated progress resets on use.
+An estimate in turns divides required points by relevant affinity income,
+rounding up, and assumes zero accumulated progress and constant income.
+General uses total affinity; the other branches use their own affinity.
+
+Installed resources
+-------------------
+Content/Title/Packs/Definitions/EmpireProgression_Definition.rpk
+Content/Title/Packs/Research/Core_Empire_Development.rpk
+Content/Title/Packs/Research/EmpireProgression_{Nature,Chaos,Astral,Materium,Order,Shadow}.rpk
+Content/Title/Packs/Research/EmpireProgression_Tree.rpk
+Language/EN/EN.MO
+
+The extractor reads indexed RPK compounds with both compact and wide field
+offset tables. Relevant rite fields: 1 (localized name), 6 (affinity-level
+condition), 7 (icon), 0x0D (starting cost), 0x10 (repeat settings).
+Record names alone are not used to infer numeric costs or repeat increments.
+
+Cost definitions store resource 000003D400000362 (Imperium) followed by its
+integer amount. The shared repeat settings contain that same resource and
+the fixed 50 increment, followed by the affinity recharge increment of 50.
+The governance settings contain 300 and omit the recharge increment.
+The Skill Tree XP array in EmpireProgression_Tree.rpk contains 12 entries:
+0, 15, 40, 60, 100, 120, 160, 200, 300, 400, 500, 600.
+Array count is at 0x204; values begin at 0x208.
+
+Example: Expansive Growth (0000048B00000F90) links to Tier 6 cost
+000003E100001CFA and standard repeat settings 0000048B00000FA8.
+In EmpireProgression_Definition.rpk, base cost 250 is at 0x57C, repeat cost
+50 is at 0xAC7, and recharge increase 50 is at 0xACB.
+Generated assets/rites-data.js records every rite's IDs, numeric offsets,
+source package, and source file SHA-256 hashes for reproducibility.
+
+Provenance and limits
+---------------------
+Names and numeric values come from local installed resources. Effect text
+is separately pinned from MinionsArt/aow4db Data/EN/EmpireProgression.json,
+commit 04c5b2d91b32b543eef3e8c6f5974f0c5f0f99f6,
+file blob 293a826c338388afd6a6e919d60e79b72dcfe4ac.
+Markup is converted to plain text for display, never inserted as HTML.
+Icons use the existing atlas pin df99314bf82c1bdeef51206a7257d7bb125b35a8.
+
+The enabled Age of Colors mod was checked for these rite, cost, and repeat
+resource IDs. It does not contain them. No other installed DLC package
+matched the linked repeat-setting names. Future patches or other mods can
+change the values. The use number is a hypothetical purchase count for each
+rite; the calculator does not import a player's history from a running save.
+
+This is static resource verification, not a live-save purchase measurement.
+The extractor only reads game files. Source layout changes and unexpected
+rite counts fail explicitly, so a future update requires review.
+
+Regenerate: node source/extract-repeatable-rites.cjs "<game installation>"
+Verify: node source/check-repeatable-rites.cjs

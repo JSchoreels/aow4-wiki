@@ -61,3 +61,13 @@ Run `node source/check-building-families.cjs` to verify cultural grouping, filte
 ## Credits
 
 Age of Wonders 4 and its building artwork belong to Triumph Studios and Paradox Interactive. Extracted building icons are served by the community-maintained [MinionsArt/aow4db](https://github.com/MinionsArt/aow4db) project. This is an unofficial fan reference.
+
+## Repeatable rites
+
+[Open the repeatable rites planner](https://jschoreels.github.io/aow4-wiki/repeatables.html). It compares all 20 repeatables, filters by affinity and effect, and calculates the price of use n, cumulative Imperium, the affinity threshold, and estimated recharge turns at a chosen affinity income. Select a rite to see its next six costs. Filters and calculator choices are shareable through the URL.
+
+The 19 standard rites add 50 Imperium and 50 affinity points per repeat. Expanded Governance adds 300 Imperium and has no recharge after the initial unlock. Initial unlock thresholds are distinguished from later affinity accumulation, and the two city-cap rites keep separate purchase counts.
+
+Names, icon IDs, costs, linked repeat settings, levels, and the affinity threshold array are extracted from the installed game packages. Effect descriptions are a separately pinned community export, documented in `source/rite-labels.json`. The shipped snapshot was checked on 2 November 2026 against Steam build 25750198; `source/rites-analysis.txt` records resource IDs, byte offsets, and verification limits.
+
+Regenerate with `node source/extract-repeatable-rites.cjs "<Age of Wonders 4 installation>"`, then run `node source/check-repeatable-rites.cjs`. The extractor only reads the installation and writes `assets/rites-data.js` in this repository. A changed serialization layout or number of rites fails explicitly for review.
